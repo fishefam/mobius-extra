@@ -1,0 +1,14 @@
+{
+  "manifest_version": 2,
+  "version": "1.0.0",
+  "name": "mobius-extra",
+  "content_scripts": [
+    {
+      "matches": ["*://*.mobius.cloud/qbeditor/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "permissions": []
+}
