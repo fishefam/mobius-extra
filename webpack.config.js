@@ -10,18 +10,23 @@ const assetDir = 'assets';
 const sourceFiles = getFilenames(sourceDir);
 const sourceFilenames = getFilenames(sourceDir, '', 'name');
 
-const assetFiles = getFilenames(assetDir);
-
 const entry = Object.fromEntries(sourceFilenames.map((n, i) => [n, makePath(sourceDir, sourceFiles[i])]));
-const patterns = assetFiles.map((n, i) => ({ from: makePath(assetDir, n), to: '' }));
 
 /** @type {import('webpack').Configuration} */
 export default {
   entry,
   output: { filename: '[name].js', path: makePath('dist'), clean: true },
-  plugins: [new CopyPlugin({ patterns })],
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        { from: makePath(sourceDir, 'manifest.json'), to: '' },
+        { from: `./${assetDir}/**/*`, to: '[path][name][ext]' },
+      ],
+    }),
+  ],
   mode: 'production',
   devtool: 'source-map',
+  watch: true,
   module: {
     rules: [
       {

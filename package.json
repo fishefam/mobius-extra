@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "build": "webpack",
-    "dev": "web-ext run --firefox-profile us9mxxgw --source-dir ./dist"
+    "dev": "web-ext run --firefox-profile %APPDATA%/Mozilla/Firefox/Profiles/us9mxxgw.default-release --source-dir ./dist"
   },
   "devDependencies": {
     "@swc/core": "^1.3.96",
