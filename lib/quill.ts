@@ -4,7 +4,7 @@ import htmlPrettify from 'pretty';
 import Quill from 'quill';
 import { selectElement } from './dom';
 import { quillModuleLink } from './quill-modules/link';
-import { getQuillModuleName } from '.';
+import { getQuillModuleName, nanoid } from '.';
 
 type MakeQuillParams = {
   container: string | Element;
@@ -36,6 +36,7 @@ const setEditorText = (quill: Quill, text: string, isScriptEditor = false) => {
     .join('\n');
   const beautifiedHtml = htmlPrettify(html.trim(), { ocd: true });
 
+  if (!isScriptEditor) quill.setText(`${beautifiedHtml}`);
   if (isScriptEditor) quill.setText(`${beautifiedScripts}`);
 };
 
@@ -46,13 +47,16 @@ const setDefaultEditorText = (quill: Quill, defaultValue: MakeQuillParams['defau
 modules.forEach(([name, callback]) => Quill.register(getQuillModuleName(name), callback));
 
 const makeQuill = ({ container, defaultValue, isScriptEditor, options }: MakeQuillParams) => {
+  const outerWrapper = document.createElement('div');
   const wrapper = document.createElement('div');
 
+  outerWrapper.append(wrapper);
+  outerWrapper.className = `quill-${nanoid()}`;
   wrapper.style.width = '100%';
   wrapper.style.height = '100%';
 
-  if (container && typeof container === 'string') selectElement(container)?.append(wrapper);
-  if (container && typeof container !== 'string') container.append(wrapper);
+  if (container && typeof container === 'string') selectElement(container)?.append(outerWrapper);
+  if (container && typeof container !== 'string') container.append(outerWrapper);
 
   /* REMEMBER TO ENABLE NEW MODULES HERE */
   const quill = new Quill(wrapper, { ...defaultOptions, ...options, modules: { link: true } });
