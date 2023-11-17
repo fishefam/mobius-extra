@@ -28,6 +28,7 @@ export default {
     path: makePath('dist'),
     clean: true,
   },
+  stats: { warnings: false },
   mode: 'production',
   devtool: 'source-map',
   watch: true,
@@ -45,7 +46,7 @@ export default {
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.(ts|js)$/,
         exclude: /node_modules/,
         use: {
           loader: 'swc-loader',
@@ -55,8 +56,8 @@ export default {
     ],
   },
   resolve: {
-    alias: { lib: resolve(__dirname, './lib/') },
-    extensions: ['.ts'],
+    alias: { '@lib': resolve(__dirname, './lib/') },
+    extensions: ['.ts', '.js'],
   },
 };
 

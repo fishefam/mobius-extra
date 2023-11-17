@@ -1,12 +1,14 @@
-import { makePath } from 'lib/index';
+import { makePath } from '@lib/index';
 
 type AssetType = 'css' | 'js';
 
 const scripts = ['custom.js'];
-const css = ['custom.css'];
+const css = ['custom.css', 'quill.css'];
 
-addAssets(scripts, 'js');
-addAssets(css, 'css');
+window.addEventListener('load', () => {
+  addAssets(scripts, 'js');
+  addAssets(css, 'css');
+});
 
 function addAssets(scripts: string[], type: AssetType) {
   for (const script of scripts) addAsset(script, type);

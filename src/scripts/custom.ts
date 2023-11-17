@@ -1,9 +1,10 @@
-import { addClasses } from 'lib/dom';
+import { addClasses, getFormData } from '@lib/dom';
+import { makeQuill } from '@lib/quill';
 
 const overlay = document.createElement('main');
-
-addClasses(overlay, 'extension-overlay');
-
-overlay.textContent = 'HEllo';
+const questionText = getFormData('.editQuestionForm', 'editor');
 
 document.body.append(overlay);
+
+addClasses(overlay, 'extension-overlay');
+makeQuill({ container: overlay, defaultValue: questionText, isScriptEditor: true });
