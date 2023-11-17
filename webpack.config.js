@@ -4,18 +4,32 @@ import { resolve } from 'path';
 import { URL, fileURLToPath } from 'url';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const scriptDir = 'src/scripts';
 const sourceDir = 'src';
 const assetDir = 'assets';
+
+const scriptFiles = getFilenames(scriptDir);
+const scriptFilenames = getFilenames(scriptDir, '', 'name');
 
 const sourceFiles = getFilenames(sourceDir);
 const sourceFilenames = getFilenames(sourceDir, '', 'name');
 
-const entry = Object.fromEntries(sourceFilenames.map((n, i) => [n, makePath(sourceDir, sourceFiles[i])]));
+const entry = {
+  ...Object.fromEntries(sourceFilenames.map((n, i) => [n, makePath(sourceDir, sourceFiles[i])])),
+  ...Object.fromEntries(scriptFilenames.map((n, i) => [`${assetDir}/${n}`, makePath(scriptDir, scriptFiles[i])])),
+};
 
 /** @type {import('webpack').Configuration} */
 export default {
   entry,
-  output: { filename: '[name].js', path: makePath('dist'), clean: true },
+  output: {
+    filename: '[name].js',
+    path: makePath('dist'),
+    clean: true,
+  },
+  mode: 'production',
+  devtool: 'source-map',
+  watch: true,
   plugins: [
     new CopyPlugin({
       patterns: [
@@ -24,9 +38,6 @@ export default {
       ],
     }),
   ],
-  mode: 'production',
-  devtool: 'source-map',
-  watch: true,
   module: {
     rules: [
       {
@@ -39,6 +50,10 @@ export default {
       },
     ],
   },
+  resolve: {
+    alias: { lib: resolve(__dirname, 'lib/') },
+    extensions: ['.ts'],
+  },
 };
 
 /**
@@ -49,9 +64,9 @@ export default {
  * @returns {string[]} Filenames in a directory
  */
 function getFilenames(base, path = '', part = 'full') {
-  return readdirSync(makePath(base, path)).map((f) =>
-    f.replace(part === 'name' ? /\..*$/ : part === 'ext' ? /^.*\./ : '', ''),
-  );
+  return readdirSync(makePath(base, path))
+    .filter((f) => /\..*$/.test(f))
+    .map((f) => f.replace(part === 'name' ? /\..*$/ : part === 'ext' ? /^.*\./ : '', ''));
 }
 
 /**
