@@ -1,9 +1,9 @@
-import { makePath } from 'lib';
+import { makePath } from '../lib';
 
 window.addEventListener('load', main, false);
 
 function main() {
-  addScript('custom-script.js');
+  addScript('custom.js');
 }
 
 function addScripts(scripts: string[]) {
@@ -12,5 +12,4 @@ function addScripts(scripts: string[]) {
 
 function addScript(script: string) {
   const scriptPath = makePath(`assets/${script}`);
-  console.log(scriptPath);
 }
