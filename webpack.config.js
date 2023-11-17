@@ -1,7 +1,8 @@
 import CopyPlugin from 'copy-webpack-plugin';
-import { readFile, readFileSync, readdirSync, writeFileSync } from 'fs';
+import { readdirSync } from 'fs';
 import { resolve } from 'path';
 import { URL, fileURLToPath } from 'url';
+import webpack from 'webpack';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const scriptDir = 'src/scripts';
@@ -36,6 +37,9 @@ export default {
         { from: makePath(sourceDir, 'manifest.json'), to: '' },
         { from: `./${assetDir}/**/*`, to: '[path][name][ext]' },
       ],
+    }),
+    new webpack.IgnorePlugin({
+      resourceRegExp: /\.json$/,
     }),
   ],
   module: {
