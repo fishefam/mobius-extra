@@ -51,7 +51,7 @@ export default {
     ],
   },
   resolve: {
-    alias: { lib: resolve(__dirname, 'lib/') },
+    alias: { lib: resolve(__dirname, './lib/') },
     extensions: ['.ts'],
   },
 };
