@@ -5,7 +5,12 @@
   "content_scripts": [
     {
       "matches": ["*://*.mobius.cloud/qbeditor/*"],
-      "js": ["content.js", "inject.js"],
+      "js": ["inject.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://*.mobius.cloud/qbeditor/*"],
+      "js": ["content.js"],
       "run_at": "document_idle"
     }
   ],

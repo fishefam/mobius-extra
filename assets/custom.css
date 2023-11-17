@@ -1,3 +1,12 @@
-.what-is {
-  color: red !important;
+.extension-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  width: 100vw;
+  min-height: 100vh;
+  background: wheat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
