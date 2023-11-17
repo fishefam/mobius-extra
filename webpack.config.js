@@ -1,5 +1,5 @@
 import CopyPlugin from 'copy-webpack-plugin';
-import { readdirSync } from 'fs';
+import { readFile, readFileSync, readdirSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 import { URL, fileURLToPath } from 'url';
 
