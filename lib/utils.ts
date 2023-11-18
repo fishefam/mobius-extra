@@ -45,15 +45,15 @@ export const extractHtmlString = (text: string): string => {
 };
 
 /**
- * Sets the provided variables as properties on a global `WebExtension` object.
+ * Sets the provided variables as properties on a global `WebExtProps` object.
  *
  * @param vars - Variables to be set globally.
  */
 export const makeVarsGlobal = (...vars: [string | number, unknown][]) => {
-  const temp = (window as any).WebExtension;
-  if (!temp) (window as any).WebExtension = {};
-  if (temp) (window as any).WebExtension = { ...temp };
-  vars.forEach(([key, value]) => ((window as any).WebExtension[`${key}`] = value));
+  const temp = (window as any).WebExtProps;
+  if (!temp) (window as any).WebExtProps = {};
+  if (temp) (window as any).WebExtProps = { ...temp };
+  vars.forEach(([key, value]) => ((window as any).WebExtProps[`${key}`] = value));
 };
 
 export const formatHtml = (html: string) => format(html, { parser: 'html', plugins: [PluginPrettierHtml] });
