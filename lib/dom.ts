@@ -31,13 +31,21 @@ export const selectElement = <T extends HTMLElement>(selector: string): T | null
  * Retrieves the string value of a named field from a form.
  *
  * @param {HTMLFormElement | string} form - A reference to the form element or a string selector for the form.
- * @param {string} key - The name of the form field whose value is to be retrieved.
- * @returns {string | undefined} The string value of the form field if found, or undefined if not found.
+ * @param {string | undefined} key - The name of the form field whose value is to be retrieved.
+ * @returns The string value of the form field if found, or all values.
  */
-export const getFormData = (form: HTMLFormElement | string, key: string): string | undefined =>
-  new FormData(typeof form === 'string' ? (selectElement<HTMLFormElement>(form) as HTMLFormElement | undefined) : form)
-    .get(key)
-    ?.toString();
+export const getFormData = <T extends string | number, U = { [k in T]: FormDataEntryValue }>(
+  form: HTMLFormElement | string,
+  key?: T,
+): U => {
+  const data = Object.fromEntries(
+    new FormData(
+      typeof form === 'string' ? (selectElement<HTMLFormElement>(form) as HTMLFormElement | undefined) : form,
+    ),
+  ) as { [k in T]: FormDataEntryValue };
+  if (key) return data[key] as U;
+  return data as U;
+};
 
 /**
  * Appends a specified node (HTMLElement) to a target HTMLElement.
