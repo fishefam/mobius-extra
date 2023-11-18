@@ -56,4 +56,15 @@ export const makeVarsGlobal = (...vars: [string | number, unknown][]) => {
   vars.forEach(([key, value]) => ((window as any).WebExtProps[`${key}`] = value));
 };
 
+/**
+ * Formats an HTML string using Prettier.
+ *
+ * @param html - The HTML string to be formatted.
+ * @returns The formatted HTML string.
+ *
+ * @example
+ * const rawHtml = '<div><p>Hello World</p></div>';
+ * const formattedHtml = formatHtml(rawHtml);
+ * console.log(formattedHtml);
+ */
 export const formatHtml = (html: string) => format(html, { parser: 'html', plugins: [PluginPrettierHtml] });
