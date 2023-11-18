@@ -86,6 +86,7 @@ export const createElement = <T extends keyof HTMLElementTagNameMap>({
   if (parent && typeof parent === 'string') {
     const parentElement = selectElement(parent);
     if (parentElement) attachElement(element, parentElement);
+    if (!parentElement) console.log(`The parent element of the new element below is null\n`, element);
   }
   if (parent && typeof parent !== 'string') attachElement(element, parent);
   return element;
