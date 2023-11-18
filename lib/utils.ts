@@ -67,4 +67,14 @@ export const makeVarsGlobal = (...vars: [string | number, unknown][]) => {
  * const formattedHtml = formatHtml(rawHtml);
  * console.log(formattedHtml);
  */
-export const formatHtml = (html: string) => format(html, { parser: 'html', plugins: [PluginPrettierHtml] });
+export const formatHtml = (html: string) =>
+  format(html, {
+    parser: 'html',
+    plugins: [PluginPrettierHtml],
+    semi: true,
+    singleQuote: true,
+    printWidth: 100,
+    htmlWhitespaceSensitivity: 'ignore',
+    singleAttributePerLine: true,
+    tabWidth: 4,
+  });

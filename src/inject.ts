@@ -4,7 +4,7 @@ type AssetType = 'css' | 'js';
 
 // Arrays storing the names of CSS and JS files to be added.
 const scripts = ['editor-overlay.js'];
-const css = ['editor-overlay.css'];
+const css = ['editor-overlay.css', 'quill.core.css', 'quill.snow.css'];
 
 /**
  * Adds the specified assets to the document upon window load.
