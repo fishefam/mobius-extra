@@ -1,4 +1,7 @@
 import { getMobiusEditorData } from '@lib/mobius/editor';
+import { extractScriptString, makeVarsGlobal } from '@lib/utils';
 
-const a = getMobiusEditorData('algorithm');
-console.log(a);
+const b = getMobiusEditorData('editor') as string;
+const script = extractScriptString(b);
+
+makeVarsGlobal({ key: 'script', value: script });
