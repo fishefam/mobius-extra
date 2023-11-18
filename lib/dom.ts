@@ -40,31 +40,53 @@ export const getFormData = (form: HTMLFormElement | string, key: string): string
     ?.toString();
 
 /**
- * Creates a new HTML element of a given type with specified attributes, classes, and an ID.
+ * Appends a specified node (HTMLElement) to a target HTMLElement.
  *
- * @template T - The tag name type, constrained to the keys of HTMLElementTagNameMap.
- * @param {FunctionCreateElementParams<T>} params - An object containing properties to define the element.
- * @returns {HTMLElementTagNameMap[T]} - The created HTML element, typed according to the provided tag name.
+ * @param {HTMLElement} node - The node to be appended.
+ * @param {HTMLElement} target - The target HTMLElement to which the node will be appended.
  *
  * @example
- * // Creating a button with an ID, class, and custom attribute
- * const button = createElement<HTMLButtonElement>({
+ * const newDiv = document.createElement('div');
+ * const parentDiv = document.getElementById('parentDiv');
+ * attachElement(newDiv, parentDiv);
+ */
+export const attachElement = (node: HTMLElement, target: HTMLElement) => target.appendChild(node);
+
+/**
+ * Creates a new HTML element of a given type with specified attributes, classes, an ID, and optionally appends it to a specified parent.
+ *
+ * @template T - A generic type extending keyof HTMLElementTagNameMap, representing the tag name of the element.
+ * @param {Object} params - An object containing parameters for creating the element.
+ * @param {keyof HTMLElementTagNameMap} params.tag - The tag name of the element to create.
+ * @param {string} [params.id] - Optional ID for the element.
+ * @param {string[]} [params.classList] - Optional array of class names for the element.
+ * @param {Array<{key: string, value: string}>} [params.attributes] - Optional array of attributes to set on the element.
+ * @param {HTMLElement | string} [params.parent] - Optional parent element or selector to which the created element will be appended.
+ * @returns {HTMLElementTagNameMap[T]} The newly created element.
+ *
+ * @example
+ * // Example of creating a button element with classes and appending it to a parent div
+ * const button = createElement({
  *   tag: 'button',
- *   id: 'submitBtn',
  *   classList: ['btn', 'btn-primary'],
- *   attributes: [{ key: 'type', value: 'submit' }],
+ *   parent: '#parentDiv'
  * });
- * document.body.appendChild(button);
  */
 export const createElement = <T extends keyof HTMLElementTagNameMap>({
   tag,
   id,
   classList,
   attributes,
+  parent,
 }: FunctionCreateElementParams<T>): HTMLElementTagNameMap[T] => {
   const element = document.createElement<T>(tag as T);
   if (id) element.id = id;
   if (classList) classList.forEach((c) => element.classList.add(c));
   if (attributes) attributes.forEach(({ key, value }) => element.setAttribute(key, value));
+  if (parent && typeof parent === 'string') {
+    const parentElement = selectElement(parent);
+    if (parentElement) attachElement(element, parentElement);
+  }
+  if (parent && typeof parent !== 'string') attachElement(element, parent);
   return element;
 };
