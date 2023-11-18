@@ -3,8 +3,8 @@ import { makePath } from '@lib/utils';
 type AssetType = 'css' | 'js';
 
 // Arrays storing the names of CSS and JS files to be added.
-const scripts = ['custom.js'];
-const css = ['custom.css', 'quill.css'];
+const scripts = ['editor-overlay.js'];
+const css = ['editor-overlay.css'];
 
 /**
  * Adds the specified assets to the document upon window load.
