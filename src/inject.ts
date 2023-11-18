@@ -1,35 +1,63 @@
-import { makePath } from '@lib/index';
+import { makePath } from '@lib/utils';
 
 type AssetType = 'css' | 'js';
 
+// Arrays storing the names of CSS and JS files to be added.
 const scripts = ['custom.js'];
 const css = ['custom.css', 'quill.css'];
 
+/**
+ * Adds the specified assets to the document upon window load.
+ */
 window.addEventListener('load', () => {
   addAssets(scripts, 'js');
   addAssets(css, 'css');
 });
 
-function addAssets(scripts: string[], type: AssetType) {
-  for (const script of scripts) addAsset(script, type);
+/**
+ * Adds an array of assets to the document.
+ *
+ * @param {string[]} assets - An array of asset filenames to be added.
+ * @param {AssetType} type - The type of the assets ('css' or 'js').
+ */
+function addAssets(assets: string[], type: AssetType) {
+  for (const asset of assets) addAsset(asset, type);
 }
 
-function addAsset(script: string, type: AssetType) {
-  const scriptPath = makePath(`assets/${script}`);
+/**
+ * Creates and appends a script or link element to the document head for the given asset.
+ *
+ * @param {string} asset - The filename of the asset to be added.
+ * @param {AssetType} type - The type of the asset ('css' or 'js').
+ */
+function addAsset(asset: string, type: AssetType) {
+  const path = makePath(`assets/${asset}`);
   const element = document.createElement(type === 'js' ? 'script' : 'link');
-  if (isScript(element)) element.src = scriptPath;
+  if (isScript(element)) element.src = path;
   if (isCSS(element)) {
     element.rel = 'stylesheet';
-    element.href = scriptPath;
+    element.href = path;
   }
   document.head.append(element);
-  console.log(`Injection: ${scriptPath}`);
+  console.log(`Injection: ${path}`);
 }
 
+/**
+ * Determines if the provided element is a HTMLScriptElement.
+ *
+ * @param {HTMLScriptElement | unknown} element - The element to check.
+ * @returns {boolean} True if the element is a HTMLScriptElement, false otherwise.
+ */
 function isScript(element: HTMLScriptElement | unknown): element is HTMLScriptElement {
-  return (element as HTMLScriptElement) != document.body;
+  return element instanceof HTMLScriptElement;
 }
 
+/**
+ * Determines if the provided element is a HTMLLinkElement.
+ *
+ * @param {HTMLLinkElement | unknown} element - The element to check.
+ * @returns {boolean} True if the element is a HTMLLinkElement, false otherwise.
+ */
 function isCSS(element: HTMLLinkElement | unknown): element is HTMLLinkElement {
-  return (element as HTMLLinkElement) != document.body;
+  return element instanceof HTMLLinkElement;
 }
