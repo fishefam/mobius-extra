@@ -42,15 +42,9 @@ export const getFormData = (form: HTMLFormElement | string, key: string): string
 /**
  * Creates a new HTML element of a given type with specified attributes, classes, and an ID.
  *
- * @template T - The type of the HTML element to be created. It extends from HTMLElement.
- * @param {Object} param0 - An object containing properties to define the element.
- * @param {keyof HTMLElementTagNameMap} param0.tag - The tag name of the element to be created.
- * @param {string} [param0.id] - The ID to assign to the element. Optional.
- * @param {string[]} [param0.classList] - An array of class names to add to the element. Optional.
- * @param {Object[]} [param0.attributes] - An array of attribute objects to set on the element. Optional.
- * @param {string} param0.attributes[].key - The attribute name.
- * @param {string} param0.attributes[].value - The attribute value.
- * @returns {T} - The created HTML element, typed as T.
+ * @template T - The tag name type, constrained to the keys of HTMLElementTagNameMap.
+ * @param {FunctionCreateElementParams<T>} params - An object containing properties to define the element.
+ * @returns {HTMLElementTagNameMap[T]} - The created HTML element, typed according to the provided tag name.
  *
  * @example
  * // Creating a button with an ID, class, and custom attribute
@@ -62,15 +56,15 @@ export const getFormData = (form: HTMLFormElement | string, key: string): string
  * });
  * document.body.appendChild(button);
  */
-export const createElement = <T extends HTMLElement>({
+export const createElement = <T extends keyof HTMLElementTagNameMap>({
   tag,
   id,
   classList,
   attributes,
-}: FunctionCreateElementParams): T => {
-  const element = document.createElement(tag);
+}: FunctionCreateElementParams<T>): HTMLElementTagNameMap[T] => {
+  const element = document.createElement<T>(tag as T);
   if (id) element.id = id;
   if (classList) classList.forEach((c) => element.classList.add(c));
   if (attributes) attributes.forEach(({ key, value }) => element.setAttribute(key, value));
-  return element as T;
+  return element;
 };
