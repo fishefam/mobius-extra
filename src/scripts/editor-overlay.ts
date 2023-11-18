@@ -1,7 +1,8 @@
 import { getMobiusEditorData } from '@lib/mobius/editor';
-import { extractScriptString, makeVarsGlobal } from '@lib/utils';
+import { extractHtmlString, extractScriptString, makeVarsGlobal } from '@lib/utils';
 
 const b = getMobiusEditorData('editor') as string;
 const script = extractScriptString(b);
+const html = extractHtmlString(b);
 
-makeVarsGlobal({ key: 'script', value: script });
+makeVarsGlobal({ key: 'script', value: script }, { key: 'html', value: html });
