@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { customAlphabet } from 'nanoid';
 
 /**
@@ -46,9 +47,9 @@ export const extractHtmlString = (text: string): string => {
  *
  * @param vars - Variables to be set globally.
  */
-export const makeVarsGlobal = (...vars: { key: string | number; value: unknown }[]) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (window as any).WebExtension = {};
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  vars.forEach(({ key, value }) => ((window as any).WebExtension[`${key}`] = value));
+export const makeVarsGlobal = (...vars: [string | number, unknown][]) => {
+  const temp = (window as any).WebExtension;
+  if (!temp) (window as any).WebExtension = {};
+  if (temp) (window as any).WebExtension = { ...temp };
+  vars.forEach(([key, value]) => ((window as any).WebExtension[`${key}`] = value));
 };
