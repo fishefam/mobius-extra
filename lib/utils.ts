@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { customAlphabet } from 'nanoid';
+import { format } from 'prettier/standalone';
+import PluginPrettierHtml from 'prettier/plugins/html';
 
 /**
  * Constructs a fully qualified URL for an internal resource in the extension.
@@ -53,3 +55,5 @@ export const makeVarsGlobal = (...vars: [string | number, unknown][]) => {
   if (temp) (window as any).WebExtension = { ...temp };
   vars.forEach(([key, value]) => ((window as any).WebExtension[`${key}`] = value));
 };
+
+export const formatHtml = (html: string) => format(html, { parser: 'html', plugins: [PluginPrettierHtml] });
