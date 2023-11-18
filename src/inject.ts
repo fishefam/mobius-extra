@@ -17,8 +17,8 @@ window.addEventListener('load', () => {
 /**
  * Adds an array of assets to the document.
  *
- * @param {string[]} assets - An array of asset filenames to be added.
- * @param {AssetType} type - The type of the assets ('css' or 'js').
+ * @param assets - An array of asset filenames to be added.
+ * @param type - The type of the assets ('css' or 'js').
  */
 function addAssets(assets: string[], type: AssetType) {
   for (const asset of assets) addAsset(asset, type);
@@ -27,8 +27,8 @@ function addAssets(assets: string[], type: AssetType) {
 /**
  * Creates and appends a script or link element to the document head for the given asset.
  *
- * @param {string} asset - The filename of the asset to be added.
- * @param {AssetType} type - The type of the asset ('css' or 'js').
+ * @param asset - The filename of the asset to be added.
+ * @param type - The type of the asset ('css' or 'js').
  */
 function addAsset(asset: string, type: AssetType) {
   const path = makePath(`assets/${asset}`);
@@ -45,8 +45,8 @@ function addAsset(asset: string, type: AssetType) {
 /**
  * Determines if the provided element is a HTMLScriptElement.
  *
- * @param {HTMLScriptElement | unknown} element - The element to check.
- * @returns {boolean} True if the element is a HTMLScriptElement, false otherwise.
+ * @param element - The element to check.
+ * @returns True if the element is a HTMLScriptElement, false otherwise.
  */
 function isScript(element: HTMLScriptElement | unknown): element is HTMLScriptElement {
   return element instanceof HTMLScriptElement;
@@ -55,8 +55,8 @@ function isScript(element: HTMLScriptElement | unknown): element is HTMLScriptEl
 /**
  * Determines if the provided element is a HTMLLinkElement.
  *
- * @param {HTMLLinkElement | unknown} element - The element to check.
- * @returns {boolean} True if the element is a HTMLLinkElement, false otherwise.
+ * @param element - The element to check.
+ * @returns True if the element is a HTMLLinkElement, false otherwise.
  */
 function isCSS(element: HTMLLinkElement | unknown): element is HTMLLinkElement {
   return element instanceof HTMLLinkElement;
