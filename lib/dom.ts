@@ -99,3 +99,23 @@ export const createElement = <T extends keyof HTMLElementTagNameMap>({
   if (parent && typeof parent !== 'string') attachElement(element, parent);
   return element;
 };
+
+/**
+ * Adds a hidden input field to a specified form.
+ *
+ * @param form - The form element to which the new input field will be added.
+ * @param name - The name attribute for the new input field.
+ * @param value - The value to be set for the new input field.
+ *
+ * @example
+ * // Assuming there is a form element with the ID 'myForm'
+ * const formElement = document.getElementById('myForm');
+ * populateForm(formElement, 'hiddenFieldName', 'hiddenFieldValue');
+ */
+export const populateForm = (form: HTMLFormElement, name: string, value: string) => {
+  const newInput = createElement({ tag: 'input' });
+  newInput.type = 'hidden';
+  newInput.name = name;
+  newInput.value = value;
+  form.appendChild(newInput);
+};
