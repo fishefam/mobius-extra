@@ -1,18 +1,30 @@
+import { createElement } from '@lib/dom';
+import { initMobiusData } from '@lib/mobius/editor';
 import { makePath } from '@lib/utils';
 
 type AssetType = 'css' | 'js';
 
+/**
+ * Immediately intercept and stop all activities when page is starting to load resources from server.
+ * Then asynchronously fetch data from Mobius server and populate the global window.webextprops object.
+ * Data from mobius is available globally via window.webextprops.mobiusData
+ * There is a prop called isDoneInit that is set to true when the fetching is successfully done.
+ *
+ * NOTE: For the optimal performance, DO NOT change the order of the first 3 statements.
+ */
+window.stop();
+initMobiusData();
+document.body = createElement({ tag: 'body' });
+
 // Arrays storing the names of CSS and JS files to be added.
-const scripts = ['editor-overlay.js'];
+const scripts = ['editor-overlay.js', 'ckeditor.js', 'questionEditor.js'];
 const css = ['editor-overlay.css', 'quill.core.css', 'quill.snow.css'];
 
 /**
  * Adds the specified assets to the document upon window load.
  */
-window.addEventListener('load', () => {
-  addAssets(scripts, 'js');
-  addAssets(css, 'css');
-});
+addAssets(scripts, 'js');
+addAssets(css, 'css');
 
 /**
  * Adds an array of assets to the document.
@@ -38,8 +50,8 @@ function addAsset(asset: string, type: AssetType) {
     element.rel = 'stylesheet';
     element.href = path;
   }
-  document.head.append(element);
-  console.log(`Injection: ${path}`);
+  document.body.append(element);
+  // console.log(`Injection: ${path}`);
 }
 
 /**
