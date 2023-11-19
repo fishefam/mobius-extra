@@ -5,6 +5,13 @@ import { serializeForm } from '@lib/utils';
 /* THIS REGEX PATTERN BELOW IS DEFINITIVE. ONLY CHANGE IF MOBIUS MAKES BREAK CHANGES TO THEIR HTML STRUCTURE */
 const MOBIUS_DATA_REGEX = /<form.*editQuestionForm(.|\n|\r|\n)*<\/form>/gi;
 
+/**
+ * Initializes Mobius data by fetching the current page, extracting the Mobius form, and parsing its data.
+ * @param onSuccess - Callback function to execute when initialization is successful.
+ * @param onFailure - Callback function to execute when initialization fails.
+ * @template T - The type of data to be returned.
+ * @template U - The type of error data in case of failure.
+ */
 export const initMobiusData = async <T = ReturnType<typeof getFormData<keyof MobiusInitData>>, U = unknown>(
   onSuccess?: (data: T) => void,
   onFailure?: (error: U) => void,
@@ -26,6 +33,13 @@ export const initMobiusData = async <T = ReturnType<typeof getFormData<keyof Mob
   }
 };
 
+/**
+ * Creates Mobius save data by merging the provided data with initial Mobius data.
+ * @param initData - The initial Mobius data.
+ * @param data - The additional data to include in the save data.
+ * @returns The Mobius save data.
+ * @template T - The type of Mobius save data.
+ */
 export const makeMobiusSaveData = <T extends MobiusSaveData = MobiusSaveData>(
   { editor: _, ...initData }: MobiusInitData,
   {
@@ -63,6 +77,13 @@ export const makeMobiusSaveData = <T extends MobiusSaveData = MobiusSaveData>(
     questionText,
   }) as T;
 
+/**
+ * Creates Mobius preview data by merging the provided data with initial Mobius data.
+ * @param initData - The initial Mobius data.
+ * @param data - The additional data to include in the preview data.
+ * @returns The Mobius preview data.
+ * @template T - The type of Mobius preview data.
+ */
 export const makeMobiusPreviewData = <T extends MobiusPreviewData = MobiusPreviewData>(
   { editor: _, ...initData }: MobiusInitData,
   {
@@ -101,6 +122,13 @@ export const makeMobiusPreviewData = <T extends MobiusPreviewData = MobiusPrevie
     editor: questionText,
   }) as T;
 
+/**
+ * Creates Mobius display data by merging the provided data with initial Mobius data.
+ * @param initData - The initial Mobius data.
+ * @param data - The additional data to include in the display data.
+ * @returns The Mobius display data.
+ * @template T - The type of Mobius display data.
+ */
 export const makeMobiusDisplayData = <T extends MobiusDisplayData = MobiusDisplayData>(
   { editor: _, ...initData }: MobiusInitData,
   { questionDefinition, version }: Pick<MobiusDisplayData, 'version' | 'questionDefinition'>,
@@ -117,12 +145,23 @@ export const makeMobiusDisplayData = <T extends MobiusDisplayData = MobiusDispla
     version,
   }) as T;
 
+/**
+ * Serializes Mobius data to a jQuery serialized string.
+ * @param data - The Mobius data to serialize.
+ * @returns The serialized Mobius data.
+ */
 export const serializeMobiusData = (data: MobiusSaveData | MobiusInitData | MobiusPreviewData | MobiusDisplayData) => {
   const form = createElement({ tag: 'form' });
   Object.entries(data).forEach(([key, value]) => populateForm(form, key, value));
   return serializeForm(form);
 };
 
+/**
+ * Queries Mobius document based on the action type and serialized data.
+ * @param actionType - The type of action to perform.
+ * @param jQuerySerializedData - The jQuery serialized data to send in the request.
+ * @returns The fetch response.
+ */
 export const queryMobiusDocument = (actionType: 'display' | 'save-or-get-preview-data', jQuerySerializedData: string) =>
   fetch(
     actionType === 'save-or-get-preview-data' ? '/qbeditor/SaveDynamicInline.do' : '/contentmanager/DisplayQuestion.do',
