@@ -13,7 +13,6 @@ export const saveMobiusEditAndExit = () => eval('saveQuestion()');
 export const previewQuestion = () => eval('previewQuestion()');
 
 export const initMobiusData = async () => {
-  window.webextprops = { isDoneInit: false };
   const container = createElement({ tag: 'div' });
   const response = await fetch(location.href);
   const text = await response.text();
@@ -21,7 +20,8 @@ export const initMobiusData = async () => {
   container.innerHTML = formHtml?.[0] ?? '';
   const form = container.firstElementChild as HTMLFormElement;
   if (form) {
-    window.webextprops.mobiusData = getFormData<MobiusEditorFormDataKeys>(form);
-    window.webextprops.isDoneInit = true;
+    const data = getFormData<MobiusEditorFormDataKeys>(form);
+    for (const key of Object.keys(data))
+      localStorage.setItem(key, data[key as MobiusEditorFormDataKeys].toString().trim());
   }
 };

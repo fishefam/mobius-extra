@@ -7,11 +7,6 @@
       "matches": ["*://*.mobius.cloud/qbeditor/*"],
       "js": ["inject.js"],
       "run_at": "document_start"
-    },
-    {
-      "matches": ["*://*.mobius.cloud/qbeditor/*"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
     }
   ],
   "content_security_policy": "script-src 'self'; object-src 'self'",

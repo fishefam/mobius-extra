@@ -6,25 +6,23 @@ type AssetType = 'css' | 'js';
 
 /**
  * Immediately intercept and stop all activities when page is starting to load resources from server.
- * Then asynchronously fetch data from Mobius server and populate the global window.webextprops object.
- * Data from mobius is available globally via window.webextprops.mobiusData
- * There is a prop called isDoneInit that is set to true when the fetching is successfully done.
+ * Then asynchronously fetch data from Mobius server and store each property individually in localStorage.
  *
- * NOTE: For the optimal performance, DO NOT change the order of the first 3 statements.
+ * NOTE: For the optimal performance, DO NOT change the order of the top statements.
  */
 window.stop();
-initMobiusData();
+initMobiusData().then(() => {
+  /**
+   * Adds the specified assets to the document upon window load.
+   */
+  addAssets(scripts, 'js');
+  addAssets(css, 'css');
+});
 document.body = createElement({ tag: 'body' });
 
 // Arrays storing the names of CSS and JS files to be added.
 const scripts = ['editor-overlay.js', 'ckeditor.js', 'questionEditor.js'];
 const css = ['editor-overlay.css', 'quill.core.css', 'quill.snow.css'];
-
-/**
- * Adds the specified assets to the document upon window load.
- */
-addAssets(scripts, 'js');
-addAssets(css, 'css');
 
 /**
  * Adds an array of assets to the document.
