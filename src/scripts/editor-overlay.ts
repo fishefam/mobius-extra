@@ -1,24 +1,10 @@
-import {
-  initMobiusData,
-  makeMobiusDisplayData,
-  makeMobiusPreviewData,
-  queryMobiusDocument,
-  serializeMobiusData,
-} from '@lib/mobius/editor';
-import { MobiusInitData } from '@lib/types';
+import { createElement } from '@lib/dom';
+import { initMobiusData } from '@lib/mobius/editor';
 
 initMobiusData(main);
 
-async function main(data: MobiusInitData) {
-  const saveData = makeMobiusPreviewData(data, {
-    algorithm: data.algorithm,
-    questionText: data.editor,
-  });
-  const serializedData = serializeMobiusData(saveData);
-  const response = await queryMobiusDocument('save-or-get-preview-data', serializedData);
-  const previewData = await response.json();
-  const displayData = makeMobiusDisplayData(data, previewData);
-  const response1 = await queryMobiusDocument('display', serializeMobiusData(displayData));
-  const display = await response1.text();
-  console.log(display);
+async function main() {
+  const container = createElement({ tag: 'main', parent: document.body, classList: ['main-container'] });
+  const leftPanel = createElement({ tag: 'div', parent: container });
+  const rightPanel = createElement({ tag: 'div', parent: container });
 }

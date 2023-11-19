@@ -1,4 +1,3 @@
-import { createElement } from '@lib/dom';
 import { makePath } from '@lib/utils';
 
 type AssetType = 'css' | 'js';
@@ -10,7 +9,8 @@ type AssetType = 'css' | 'js';
  * NOTE: For the optimal performance, DO NOT change the order of the top statements.
  */
 window.stop();
-document.body = createElement({ tag: 'body' });
+const html = document.querySelector('html');
+if (html) html.innerHTML = '<head></head><body></body>';
 
 // Arrays storing the names of CSS and JS files to be added.
 const scripts = ['editor-overlay.js'];
@@ -43,7 +43,7 @@ function addAsset(asset: string, type: AssetType) {
     element.rel = 'stylesheet';
     element.href = path;
   }
-  document.body.append(element);
+  document.head.append(element);
   // console.log(`Injection: ${path}`);
 }
 
