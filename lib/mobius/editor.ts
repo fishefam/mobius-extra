@@ -23,5 +23,6 @@ export const initMobiusData = async () => {
     const data = getFormData<MobiusEditorFormDataKeys>(form);
     for (const key of Object.keys(data))
       localStorage.setItem(key, data[key as MobiusEditorFormDataKeys].toString().trim());
+    return data;
   }
 };

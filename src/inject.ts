@@ -21,7 +21,7 @@ initMobiusData().then(() => {
 document.body = createElement({ tag: 'body' });
 
 // Arrays storing the names of CSS and JS files to be added.
-const scripts = ['editor-overlay.js', 'ckeditor.js', 'questionEditor.js'];
+const scripts = ['editor-overlay.js', 'jquery.js'];
 const css = ['editor-overlay.css', 'quill.core.css', 'quill.snow.css'];
 
 /**

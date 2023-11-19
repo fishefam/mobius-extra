@@ -44,3 +44,19 @@ export type MobiusEditorFormDataKeys =
   | 'questionText'
   | 'repositoryPath'
   | 'uid';
+
+export type MobiusPostRequestParams =
+  | 'classId'
+  | 'adaptive'
+  | 'name'
+  | 'questionText'
+  | 'authorNotes'
+  | 'authorNotesEditor'
+  | 'algorithm'
+  | 'customCss'
+  | 'comment'
+  | 'commentEditor'
+  | 'uid'
+  | 'actionId'
+  | 'hasUnsavedQuestion'
+  | 'AntiCsrfToken';
