@@ -1,5 +1,4 @@
 import { createElement } from '@lib/dom';
-import { initMobiusData } from '@lib/mobius/editor';
 import { makePath } from '@lib/utils';
 
 type AssetType = 'css' | 'js';
@@ -11,18 +10,14 @@ type AssetType = 'css' | 'js';
  * NOTE: For the optimal performance, DO NOT change the order of the top statements.
  */
 window.stop();
-initMobiusData().then(() => {
-  /**
-   * Adds the specified assets to the document upon window load.
-   */
-  addAssets(scripts, 'js');
-  addAssets(css, 'css');
-});
 document.body = createElement({ tag: 'body' });
 
 // Arrays storing the names of CSS and JS files to be added.
-const scripts = ['editor-overlay.js', 'jquery.js'];
+const scripts = ['editor-overlay.js'];
 const css = ['editor-overlay.css', 'quill.core.css', 'quill.snow.css'];
+
+addAssets(scripts, 'js');
+addAssets(css, 'css');
 
 /**
  * Adds an array of assets to the document.

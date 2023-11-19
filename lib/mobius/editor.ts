@@ -1,90 +1,138 @@
-import $ from 'jquery';
 import { createElement, getFormData, populateForm } from '@lib/dom';
-import { MobiusEditorFormDataKeys, MobiusPostRequestParams } from '@lib/types';
+import { MobiusDisplayData, MobiusInitData, MobiusPreviewData, MobiusSaveData } from '@lib/types';
+import { serializeForm } from '@lib/utils';
 
 /* THIS REGEX PATTERN BELOW IS DEFINITIVE. ONLY CHANGE IF MOBIUS MAKES BREAK CHANGES TO THEIR HTML STRUCTURE */
-export const MOBIUS_DATA_FORM_REGEX = /<form.*editQuestionForm(.|\n|\r|\n)*<\/form>/gi;
+const MOBIUS_DATA_REGEX = /<form.*editQuestionForm(.|\n|\r|\n)*<\/form>/gi;
 
-export const MobiusEditorFormClassname = '.editQuestionForm';
-export const getAllMobiusEditorData = () => getFormData<MobiusEditorFormDataKeys>(MobiusEditorFormClassname);
-export const getMobiusEditorData = <T extends MobiusEditorFormDataKeys, U = FormDataEntryValue>(key: T) =>
-  getFormData<T, U>(MobiusEditorFormClassname, key);
-export const saveMobiusEdit = () => eval('saveDraftQuestion({})');
-export const saveMobiusEditAndExit = () => eval('saveQuestion()');
-export const previewQuestion = () => eval('previewQuestion()');
-
-export const initMobiusData = async () => {
-  const container = createElement({ tag: 'div' });
-  const response = await fetch(location.href);
-  const text = await response.text();
-  const formHtml = text.match(MOBIUS_DATA_FORM_REGEX);
-  container.innerHTML = formHtml?.[0] ?? '';
-  const form = container.firstElementChild as HTMLFormElement;
-  if (form) {
-    const data = getFormData<MobiusEditorFormDataKeys>(form);
-    for (const key of Object.keys(data))
-      localStorage.setItem(key, data[key as MobiusEditorFormDataKeys].toString().trim());
-    return data;
-  }
-};
-
-export const makeMobiusData = () => {
-  const form = createElement({ tag: 'form' });
-  const localStorageKeys = Object.keys(localStorage) as MobiusEditorFormDataKeys[];
-  const mobiusData: { [key in MobiusPostRequestParams]: string } = {
-    actionId: '',
-    adaptive: '',
-    algorithm: '',
-    AntiCsrfToken: '',
-    authorNotes: '',
-    authorNotesEditor: '',
-    classId: '',
-    comment: '',
-    commentEditor: '',
-    customCss: '',
-    hasUnsavedQuestion: '',
-    name: '',
-    questionText: '',
-    uid: '',
-  };
-  for (const key of localStorageKeys) {
-    // if (key === 'editor') formData.append('questionText', localStorage.getItem(key) as string);
-    // if (key === 'AntiCsrfToken') formData.append('AntiCsrfToken', document.cookie.replace('AntiCsrfToken=', ''));
-    // if (key !== 'editor' && mobiusData[key as MobiusPostRequestParams] === '')
-    //   formData.append(key, localStorage.getItem(key) as string);
-    if (mobiusData.AntiCsrfToken === '') {
-      populateForm(form, 'AntiCsrfToken', document.cookie.replace('AntiCsrfToken=', ''));
-      mobiusData.AntiCsrfToken = document.cookie.replace('AntiCsrfToken=', '');
+export const initMobiusData = async <T = ReturnType<typeof getFormData<keyof MobiusInitData>>, U = unknown>(
+  onSuccess?: (data: T) => void,
+  onFailure?: (error: U) => void,
+) => {
+  try {
+    const container = createElement({ tag: 'div' });
+    const response = await fetch(location.href);
+    const text = await response.text();
+    const formHtml = text.match(MOBIUS_DATA_REGEX);
+    container.innerHTML = formHtml?.[0] ?? '';
+    const form = container.firstElementChild as HTMLFormElement;
+    if (form) {
+      const data = getFormData<keyof MobiusInitData>(form);
+      const filteredData = Object.fromEntries(Object.entries(data).filter(([_, value]) => value !== ''));
+      if (onSuccess) onSuccess(filteredData as T);
     }
-    if (key === 'editor')
-      populateForm(form, 'questionText', `THIS IS A TEST FROM VSCODE${localStorage.getItem(key) as string}`);
-    if (key === 'actionId') populateForm(form, 'actionId', 'savedraft');
-    if (
-      key !== 'editor' &&
-      key !== 'questionText' &&
-      key !== 'actionId' &&
-      mobiusData[key as MobiusPostRequestParams] === ''
-    )
-      populateForm(form, key, localStorage.getItem(key) as string);
+  } catch (error) {
+    if (onFailure) onFailure(error as U);
   }
-  return $(form).serialize();
 };
 
-export const saveMobiusDocument = (jQuerySerializedData: string) =>
-  fetch('/qbeditor/SaveDynamicInline.do', {
-    credentials: 'include',
-    headers: {
-      'Accept': 'text/plain, */*; q=0.01',
-      'Accept-Language': 'en-US,en;q=0.5',
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Sec-Fetch-Dest': 'empty',
-      'Sec-Fetch-Mode': 'cors',
-      'Sec-Fetch-Site': 'same-origin',
-      'Pragma': 'no-cache',
-      'Cache-Control': 'no-cache',
+export const makeMobiusSaveData = <T extends MobiusSaveData = MobiusSaveData>(
+  { editor: _, ...initData }: MobiusInitData,
+  {
+    algorithm = '',
+    authorNotes = '',
+    authorNotesEditor = '',
+    comment = '',
+    commentEditor = '',
+    customCss = '',
+    questionText = '',
+    name = '',
+  }: Pick<
+    MobiusSaveData,
+    | 'algorithm'
+    | 'authorNotes'
+    | 'authorNotesEditor'
+    | 'comment'
+    | 'commentEditor'
+    | 'customCss'
+    | 'questionText'
+    | 'name'
+  >,
+): T =>
+  ({
+    ...initData,
+    actionId: 'savedraft',
+    AntiCsrfToken: initData.AntiCsrfToken ?? (document.cookie.match(/AntiCsrfToken=.*&?$/)?.[0] ?? '').split('=')[1],
+    algorithm,
+    authorNotes,
+    authorNotesEditor,
+    comment,
+    commentEditor,
+    customCss,
+    name,
+    questionText,
+  }) as T;
+
+export const makeMobiusPreviewData = <T extends MobiusPreviewData = MobiusPreviewData>(
+  { editor: _, ...initData }: MobiusInitData,
+  {
+    algorithm = '',
+    authorNotes = '',
+    authorNotesEditor = '',
+    comment = '',
+    commentEditor = '',
+    customCss = '',
+    questionText = '',
+    name = '',
+  }: Pick<
+    MobiusSaveData,
+    | 'algorithm'
+    | 'authorNotes'
+    | 'authorNotesEditor'
+    | 'comment'
+    | 'commentEditor'
+    | 'customCss'
+    | 'questionText'
+    | 'name'
+  >,
+): T =>
+  ({
+    ...initData,
+    actionId: 'preview',
+    AntiCsrfToken: initData.AntiCsrfToken ?? (document.cookie.match(/AntiCsrfToken=.*&?$/)?.[0] ?? '').split('=')[1],
+    algorithm,
+    authorNotes,
+    authorNotesEditor,
+    comment,
+    commentEditor,
+    customCss,
+    name,
+    questionText,
+    editor: questionText,
+  }) as T;
+
+export const makeMobiusDisplayData = <T extends MobiusDisplayData = MobiusDisplayData>(
+  { editor: _, ...initData }: MobiusInitData,
+  { questionDefinition, version }: Pick<MobiusDisplayData, 'version' | 'questionDefinition'>,
+): T =>
+  ({
+    actionID: 'display',
+    algorithmic: 'true',
+    AntiCsrfToken: initData.AntiCsrfToken ?? (document.cookie.match(/AntiCsrfToken=.*&?$/)?.[0] ?? '').split('=')[1],
+    baseUrl: location.origin,
+    error: 'false',
+    errorMsg: '',
+    questionDefinition,
+    slideNumber: '',
+    version,
+  }) as T;
+
+export const serializeMobiusData = (data: MobiusSaveData | MobiusInitData | MobiusPreviewData | MobiusDisplayData) => {
+  const form = createElement({ tag: 'form' });
+  Object.entries(data).forEach(([key, value]) => populateForm(form, key, value));
+  return serializeForm(form);
+};
+
+export const queryMobiusDocument = (actionType: 'display' | 'save-or-get-preview-data', jQuerySerializedData: string) =>
+  fetch(
+    actionType === 'save-or-get-preview-data' ? '/qbeditor/SaveDynamicInline.do' : '/contentmanager/DisplayQuestion.do',
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'text/plain, */*; q=0.01',
+      },
+      body: jQuerySerializedData,
+      method: 'POST',
     },
-    body: jQuerySerializedData,
-    method: 'POST',
-    mode: 'cors',
-  });
+  );

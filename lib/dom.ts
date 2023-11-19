@@ -1,4 +1,4 @@
-import type { FunctionCreateElementParams } from './types';
+import type { CreateElementFunctionParams } from './types';
 
 /**
  * Adds one or more class names to an element.
@@ -86,11 +86,11 @@ export const createElement = <T extends keyof HTMLElementTagNameMap>({
   classList,
   attributes,
   parent,
-}: FunctionCreateElementParams<T>): HTMLElementTagNameMap[T] => {
+}: CreateElementFunctionParams<T>): HTMLElementTagNameMap[T] => {
   const element = document.createElement<T>(tag as T);
   if (id) element.id = id;
   if (classList) classList.forEach((c) => element.classList.add(c));
-  if (attributes) attributes.forEach(({ key, value }) => element.setAttribute(key, value));
+  if (attributes) attributes.forEach(({ name, value }) => element.setAttribute(name, value));
   if (parent && typeof parent === 'string') {
     const parentElement = selectElement(parent);
     if (parentElement) attachElement(element, parentElement);
@@ -113,9 +113,13 @@ export const createElement = <T extends keyof HTMLElementTagNameMap>({
  * populateForm(formElement, 'hiddenFieldName', 'hiddenFieldValue');
  */
 export const populateForm = (form: HTMLFormElement, name: string, value: string) => {
-  const newInput = createElement({ tag: 'input' });
-  newInput.type = 'hidden';
-  newInput.name = name;
-  newInput.value = value;
-  form.appendChild(newInput);
+  const input = createElement({
+    tag: 'input',
+    attributes: [
+      { name: 'type', value: 'hidden' },
+      { name: 'name', value: name },
+      { name: 'value', value },
+    ],
+  });
+  form.appendChild(input);
 };

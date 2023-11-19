@@ -1,62 +1,68 @@
-export type FunctionCreateElementParams<T extends keyof HTMLElementTagNameMap> = {
+export type CreateElementFunctionParams<T extends keyof HTMLElementTagNameMap> = {
   id?: string;
   classList?: string[];
-  attributes?: { key: string; value: string }[];
+  attributes?: { name: string; value: string }[];
   parent?: HTMLElement | string;
   tag: T;
 };
 
-export type MobiusEditorFormDataKeys =
-  | 'AntiCsrfToken'
-  | 'a1'
-  | 'a2'
-  | 'a3'
-  | 'a4'
-  | 'a5'
-  | 'actionId'
-  | 'adaptive'
-  | 'algoLibname'
-  | 'algorithm'
-  | 'appliedThemes'
-  | 'authorNotes'
-  | 'authorNotesEditor'
-  | 'b1'
-  | 'b2'
-  | 'b3'
-  | 'b4'
-  | 'b5'
-  | 'b6'
-  | 'c1'
-  | 'c2'
-  | 'c3'
-  | 'classId'
-  | 'comment'
-  | 'commentEditor'
-  | 'customCss'
-  | 'editor'
-  | 'groupId'
-  | 'hasUnsavedQuestion'
-  | 'id'
-  | 'm1'
-  | 'm2'
-  | 'mapleMode'
-  | 'name'
-  | 'questionText'
-  | 'repositoryPath'
-  | 'uid';
+export type MobiusEditorQueryEndpoint = '/qbeditor/SaveDynamicInline.do' | '/contentmanager/DisplayQuestion.do';
 
-export type MobiusPostRequestParams =
-  | 'classId'
-  | 'adaptive'
-  | 'name'
-  | 'questionText'
-  | 'authorNotes'
-  | 'authorNotesEditor'
-  | 'algorithm'
-  | 'customCss'
-  | 'comment'
-  | 'commentEditor'
-  | 'uid'
-  | 'actionId'
-  | 'hasUnsavedQuestion'
-  | 'AntiCsrfToken';
+export interface MobiusSaveData {
+  AntiCsrfToken?: string;
+  actionId: 'savedraft';
+  adaptive?: string;
+  algorithm?: string;
+  authorNotes?: string;
+  authorNotesEditor?: string;
+  classId?: string;
+  comment?: string;
+  commentEditor?: string;
+  customCss?: string;
+  hasUnsavedQuestion?: string;
+  name?: string;
+  questionText?: string;
+  repositoryPath?: string;
+  uid?: string;
+}
+
+export interface MobiusInitData extends Omit<MobiusSaveData, 'actionId'> {
+  a1?: string;
+  a2?: string;
+  a3?: string;
+  a4?: string;
+  a5?: string;
+  actionId: 'save';
+  algoLibname?: string;
+  appliedThemes?: string;
+  b1?: string;
+  b2?: string;
+  b3?: string;
+  b4?: string;
+  b5?: string;
+  b6?: string;
+  c1?: string;
+  c2?: string;
+  c3?: string;
+  editor?: string;
+  groupId?: string;
+  id?: string;
+  m1?: string;
+  m2?: string;
+  mapleMode?: string;
+}
+
+export interface MobiusPreviewData extends Omit<MobiusSaveData, 'actionId'>, Omit<MobiusInitData, 'actionId'> {
+  actionId: 'preview';
+}
+
+export interface MobiusDisplayData extends Pick<MobiusSaveData, 'AntiCsrfToken'> {
+  actionID: 'display';
+  algorithmic?: string;
+  baseUrl?: string;
+  error?: string;
+  errorMsg?: string;
+  questionDefinition?: string;
+  slideNumber?: string;
+  version?: string;
+}

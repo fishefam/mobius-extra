@@ -2,6 +2,7 @@
 import { customAlphabet } from 'nanoid';
 import { format } from 'prettier/standalone';
 import PluginPrettierHtml from 'prettier/plugins/html';
+import $ from 'jquery';
 
 /**
  * Constructs a fully qualified URL for an internal resource in the extension.
@@ -78,3 +79,17 @@ export const formatHtml = (html: string) =>
     singleAttributePerLine: true,
     tabWidth: 4,
   });
+
+/**
+ * Serializes a form into a URL-encoded query string using jQuery's serialize method.
+ *
+ * @param form - The form element or the selector string for the form to be serialized.
+ * @returns  A URL-encoded query string representing the form data.
+ *
+ * @example
+ * // If you have a form element with the ID 'myForm'
+ * const serializedData = serializeForm(document.getElementById('myForm'));
+ * // Or using a jQuery selector
+ * const serializedData = serializeForm('#myForm');
+ */
+export const serializeForm = (form: HTMLFormElement | string) => $(form as any).serialize();
