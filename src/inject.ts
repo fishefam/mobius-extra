@@ -10,11 +10,11 @@ type AssetType = 'css' | 'js';
  */
 window.stop();
 const html = document.querySelector('html');
-if (html) html.innerHTML = '<head></head><body></body>';
+if (html) html.innerHTML = `<head></head><body><div id="svelte-app"></div></body>`;
 
 // Arrays storing the names of CSS and JS files to be added.
-const scripts = ['editor-overlay.js'];
-const css = ['editor-overlay.css', 'quill.core.css', 'quill.snow.css'];
+const scripts = ['svelte.js'];
+const css = ['quill.core.css', 'quill.snow.css', 'svelte.css'];
 
 addAssets(scripts, 'js');
 addAssets(css, 'css');
@@ -44,7 +44,7 @@ function addAsset(asset: string, type: AssetType) {
     element.href = path;
   }
   document.head.append(element);
-  // console.log(`Injection: ${path}`);
+  console.log(`Injection: ${path}`);
 }
 
 /**

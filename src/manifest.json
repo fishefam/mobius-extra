@@ -10,5 +10,11 @@
     }
   ],
   "content_security_policy": "script-src 'self'; object-src 'self'",
-  "permissions": []
+  "permissions": [],
+  "web_accessible_resources": [
+    "dist/assets/index-w6hcz12F.css",
+    "dist/assets/index-Tjxc2dTA.js",
+    "dist/vite.svg",
+    "vite.svg"
+  ]
 }

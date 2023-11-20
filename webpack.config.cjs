@@ -1,10 +1,9 @@
-import CopyPlugin from 'copy-webpack-plugin';
-import { readdirSync } from 'fs';
-import { resolve } from 'path';
-import { URL, fileURLToPath } from 'url';
-import webpack from 'webpack';
+const CopyPlugin = require('copy-webpack-plugin');
+const { readdirSync } = require('fs');
+const { resolve } = require('path');
+const WebpackShellPlugin = require('webpack-shell-plugin-next');
+const WatchExternalFilesPlugin = require('webpack-watch-files-plugin').default;
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const scriptDir = 'src/scripts';
 const sourceDir = 'src';
 const assetDir = 'assets';
@@ -21,7 +20,7 @@ const entry = {
 };
 
 /** @type {import('webpack').Configuration} */
-export default {
+const config = {
   entry,
   output: {
     filename: '[name].js',
@@ -31,16 +30,25 @@ export default {
   stats: { warnings: false },
   mode: 'production',
   devtool: 'source-map',
-  watch: true,
   plugins: [
+    new WatchExternalFilesPlugin({
+      files: [
+        './svelte/**/*.svelte',
+        './svelte/**/*.ts',
+        './svelte/**/*.css',
+        './src/**/*.ts',
+        './src/**/*.json',
+        './lib/**/*.ts',
+        './assets/**/*.js',
+        './assets/**/*.css',
+      ],
+    }),
+    new WebpackShellPlugin({ onBuildEnd: { scripts: ['npm run build:svelte'], blocking: true } }),
     new CopyPlugin({
       patterns: [
         { from: makePath(sourceDir, 'manifest.json'), to: '' },
         { from: `./${assetDir}/**/*`, to: '[path][name][ext]' },
       ],
-    }),
-    new webpack.IgnorePlugin({
-      resourceRegExp: /\.json$/,
     }),
   ],
   module: {
@@ -60,6 +68,8 @@ export default {
     extensions: ['.ts', '.js'],
   },
 };
+
+module.exports = config;
 
 /**
  *

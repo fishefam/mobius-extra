@@ -5,9 +5,11 @@
     "baseUrl": "./src",
     "typeRoots": ["node_modules/@types", "node_modules/web-ext-types"],
     "esModuleInterop": true,
+    "moduleResolution": "Node",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
     "paths": { "@lib/*": ["../lib/*"] }
-  }
+  },
+  "exclude": ["svelte"]
 }
