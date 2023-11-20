@@ -35,5 +35,5 @@ function addAsset(asset: string, type: AssetType) {
     element.href = path;
   }
   document.head.append(element);
-  console.log(`Injection: ${path}`);
+  // console.log(`Injection: ${path}`);
 }

@@ -3,6 +3,7 @@ const { readdirSync } = require('fs');
 const { resolve } = require('path');
 const WebpackShellPlugin = require('webpack-shell-plugin-next');
 const WatchExternalFilesPlugin = require('webpack-watch-files-plugin').default;
+const RemovePlugin = require('remove-files-webpack-plugin');
 
 const scriptDir = 'src/scripts';
 const sourceDir = 'src';
@@ -46,13 +47,22 @@ const config = {
         './svelte/**/*.svelte',
         './svelte/**/*.ts',
         './svelte/**/*.css',
+        './svelte/**/*.svg',
+        './svelte/**/*.html',
         './src/**/*.ts',
         './src/**/*.json',
+        './src/**/*.svg',
+        './src/**/*.html',
         './lib/**/*.ts',
+        './lib/**/*.svg',
+        './lib/**/*.html',
         './assets/**/*.js',
         './assets/**/*.css',
+        './assets/**/*.svg',
+        './assets/**/*.html',
       ],
     }),
+    new RemovePlugin({ after: { include: ['./dist/assets/index.html'] } }),
   ],
   module: {
     rules: [

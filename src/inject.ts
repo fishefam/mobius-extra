@@ -1,3 +1,4 @@
+import { selectElement } from '@lib/dom';
 import { AssetType } from '@lib/types';
 import { isCSS, isScript, makePath } from '@lib/utils';
 
@@ -9,7 +10,7 @@ import { isCSS, isScript, makePath } from '@lib/utils';
  */
 window.stop();
 localStorage.setItem('extensionUrl', makePath(''));
-const html = document.querySelector('html');
+const html = selectElement('html');
 if (html)
   html.innerHTML = `<head><link rel="icon" type="image/x-icon" href="${makePath(
     'assets/favicon.ico',
