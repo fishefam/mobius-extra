@@ -21,16 +21,26 @@ const entry = {
 
 /** @type {import('webpack').Configuration} */
 const config = {
+  watch: true,
   entry,
   output: {
     filename: '[name].js',
     path: makePath('dist'),
-    clean: true,
   },
   stats: { warnings: false },
   mode: 'production',
   // devtool: 'source-map',
   plugins: [
+    new WebpackShellPlugin({
+      onBuildStart: { scripts: ['npm run build:svelte'], parallel: true },
+      onBuildEnd: { scripts: ['npm run webext'], parallel: true },
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: makePath(sourceDir, 'manifest.json'), to: '' },
+        { from: `./${assetDir}/**/*`, to: '[path][name][ext]' },
+      ],
+    }),
     new WatchExternalFilesPlugin({
       files: [
         './svelte/**/*.svelte',
@@ -41,13 +51,6 @@ const config = {
         './lib/**/*.ts',
         './assets/**/*.js',
         './assets/**/*.css',
-      ],
-    }),
-    new WebpackShellPlugin({ onBuildEnd: { scripts: ['npm run build:svelte'], blocking: true } }),
-    new CopyPlugin({
-      patterns: [
-        { from: makePath(sourceDir, 'manifest.json'), to: '' },
-        { from: `./${assetDir}/**/*`, to: '[path][name][ext]' },
       ],
     }),
   ],

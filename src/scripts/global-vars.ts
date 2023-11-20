@@ -7,6 +7,7 @@ initMobiusData(main);
 async function main(initMobiusData: MobiusInitData) {
   window.webext = { initMobiusData };
   addAssets(['svelte.js'], 'js');
+  document.title = initMobiusData.name ?? 'Newbius';
 }
 
 /**

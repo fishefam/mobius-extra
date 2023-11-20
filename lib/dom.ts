@@ -86,9 +86,11 @@ export const createElement = <T extends keyof HTMLElementTagNameMap>({
   classList,
   attributes,
   parent,
+  text,
 }: CreateElementFunctionParams<T>): HTMLElementTagNameMap[T] => {
   const element = document.createElement<T>(tag as T);
   if (id) element.id = id;
+  if (text) element.textContent = text;
   if (classList) classList.forEach((c) => element.classList.add(c));
   if (attributes) attributes.forEach(({ name, value }) => element.setAttribute(name, value));
   if (parent && typeof parent === 'string') {

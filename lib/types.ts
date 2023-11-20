@@ -6,6 +6,7 @@ export type CreateElementFunctionParams<T extends keyof HTMLElementTagNameMap> =
   attributes?: { name: string; value: string }[];
   parent?: HTMLElement | string;
   tag: T;
+  text?: string;
 };
 
 export type MobiusEditorQueryEndpoint = '/qbeditor/SaveDynamicInline.do' | '/contentmanager/DisplayQuestion.do';

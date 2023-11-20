@@ -10,11 +10,14 @@ import { isCSS, isScript, makePath } from '@lib/utils';
 window.stop();
 localStorage.setItem('extensionUrl', makePath(''));
 const html = document.querySelector('html');
-if (html) html.innerHTML = `<head></head><body><div id="svelte-app"></div></body>`;
+if (html)
+  html.innerHTML = `<head><link rel="icon" type="image/x-icon" href="${makePath(
+    'assets/favicon.ico',
+  )}"></head><body></body>`;
 
 // Arrays storing the names of CSS and JS files to be added.
 const scripts = ['global-vars.js'];
-const css = ['quill.core.css', 'quill.snow.css', 'svelte.css'];
+const css = ['svelte.css'];
 
 addAssets(scripts, 'js');
 addAssets(css, 'css');
@@ -44,5 +47,5 @@ function addAsset(asset: string, type: AssetType) {
     element.href = path;
   }
   document.head.append(element);
-  console.log(`Injection: ${path}`);
+  // console.log(`Injection: ${path}`);
 }

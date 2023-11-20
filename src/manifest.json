@@ -11,5 +11,5 @@
   ],
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "permissions": [],
-  "web_accessible_resources": ["assets/svelte.js", "assets/svelte.css"]
+  "web_accessible_resources": ["assets/svelte.js", "assets/svelte.css", "assets/favicon.ico"]
 }

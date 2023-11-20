@@ -7,9 +7,9 @@
   "type": "module",
   "description": "",
   "scripts": {
-    "build": "webpack",
+    "dev": "webpack",
     "build:svelte": "vite build svelte",
-    "dev": "web-ext run --firefox-profile %APPDATA%/Mozilla/Firefox/Profiles/us9mxxgw.default-release --source-dir ./dist",
+    "webext": "web-ext run --firefox-profile %APPDATA%/Mozilla/Firefox/Profiles/us9mxxgw.default-release --source-dir ./dist",
     "lint": "eslint ./src ./lib --fix"
   },
   "devDependencies": {
