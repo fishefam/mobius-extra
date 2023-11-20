@@ -1,6 +1,5 @@
-import { makePath } from '@lib/utils';
-
-type AssetType = 'css' | 'js';
+import { AssetType } from '@lib/types';
+import { isCSS, isScript, makePath } from '@lib/utils';
 
 /**
  * Immediately intercept and stop all activities when page is starting to load resources from server.
@@ -9,11 +8,12 @@ type AssetType = 'css' | 'js';
  * NOTE: For the optimal performance, DO NOT change the order of the top statements.
  */
 window.stop();
+localStorage.setItem('extensionUrl', makePath(''));
 const html = document.querySelector('html');
 if (html) html.innerHTML = `<head></head><body><div id="svelte-app"></div></body>`;
 
 // Arrays storing the names of CSS and JS files to be added.
-const scripts = ['global-vars.js', 'svelte.js'];
+const scripts = ['global-vars.js'];
 const css = ['quill.core.css', 'quill.snow.css', 'svelte.css'];
 
 addAssets(scripts, 'js');
@@ -25,7 +25,7 @@ addAssets(css, 'css');
  * @param assets - An array of asset filenames to be added.
  * @param type - The type of the assets ('css' or 'js').
  */
-function addAssets(assets: string[], type: AssetType) {
+export function addAssets(assets: string[], type: AssetType) {
   for (const asset of assets) addAsset(asset, type);
 }
 
@@ -45,24 +45,4 @@ function addAsset(asset: string, type: AssetType) {
   }
   document.head.append(element);
   console.log(`Injection: ${path}`);
-}
-
-/**
- * Determines if the provided element is a HTMLScriptElement.
- *
- * @param element - The element to check.
- * @returns True if the element is a HTMLScriptElement, false otherwise.
- */
-function isScript(element: HTMLScriptElement | unknown): element is HTMLScriptElement {
-  return element instanceof HTMLScriptElement;
-}
-
-/**
- * Determines if the provided element is a HTMLLinkElement.
- *
- * @param element - The element to check.
- * @returns True if the element is a HTMLLinkElement, false otherwise.
- */
-function isCSS(element: HTMLLinkElement | unknown): element is HTMLLinkElement {
-  return element instanceof HTMLLinkElement;
 }

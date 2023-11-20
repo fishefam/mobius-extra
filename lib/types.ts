@@ -1,3 +1,5 @@
+export type AssetType = 'css' | 'js';
+
 export type CreateElementFunctionParams<T extends keyof HTMLElementTagNameMap> = {
   id?: string;
   classList?: string[];

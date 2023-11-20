@@ -93,3 +93,23 @@ export const formatHtml = (html: string) =>
  * const serializedData = serializeForm('#myForm');
  */
 export const serializeForm = (form: HTMLFormElement | string) => $(form as any).serialize();
+
+/**
+ * Determines if the provided element is a HTMLScriptElement.
+ *
+ * @param element - The element to check.
+ * @returns True if the element is a HTMLScriptElement, false otherwise.
+ */
+export const isScript = (element: HTMLScriptElement | unknown): element is HTMLScriptElement => {
+  return element instanceof HTMLScriptElement;
+};
+
+/**
+ * Determines if the provided element is a HTMLLinkElement.
+ *
+ * @param element - The element to check.
+ * @returns True if the element is a HTMLLinkElement, false otherwise.
+ */
+export const isCSS = (element: HTMLLinkElement | unknown): element is HTMLLinkElement => {
+  return element instanceof HTMLLinkElement;
+};

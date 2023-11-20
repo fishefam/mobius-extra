@@ -29,7 +29,7 @@ const config = {
   },
   stats: { warnings: false },
   mode: 'production',
-  devtool: 'source-map',
+  // devtool: 'source-map',
   plugins: [
     new WatchExternalFilesPlugin({
       files: [
@@ -58,7 +58,7 @@ const config = {
         exclude: /node_modules/,
         use: {
           loader: 'swc-loader',
-          options: { minify: true, sourceMaps: true, jsc: { parser: { syntax: 'typescript' } } },
+          options: { minify: true, jsc: { parser: { syntax: 'typescript' } } },
         },
       },
     ],
