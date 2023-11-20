@@ -20,7 +20,7 @@ export default defineConfig({
   ],
   build: {
     emptyOutDir: true,
-    watch: {},
+    // watch: {},
     outDir: '../dist/assets',
     cssCodeSplit: false,
     rollupOptions: {

@@ -32,8 +32,8 @@ const config = {
   mode: 'production',
   plugins: [
     new WebpackShellPlugin({
-      onBuildStart: { scripts: ['npm run build:svelte'], parallel: true },
-      onBuildEnd: { scripts: ['npm run webext'], parallel: true },
+      onBuildStart: { scripts: ['npm run webpack:svelte'], parallel: true },
+      onBuildEnd: process.env.MODULES === 'part' ? {} : { scripts: ['npm run webext'], parallel: true },
     }),
     new CopyPlugin({
       patterns: [

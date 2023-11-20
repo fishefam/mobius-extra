@@ -1,15 +1,21 @@
 <script lang="ts">
-  import { EditorView, basicSetup } from 'codemirror';
-  import { javascript } from '@codemirror/lang-javascript';
-  import { selectElement } from '@lib/dom';
-  import { onMount } from 'svelte';
+  let main: HTMLElement;
+  let div: HTMLDivElement;
+  let button: HTMLButtonElement;
+  let isClick = false;
 
-  onMount(() => {
-    let view = new EditorView({
-      extensions: [basicSetup, javascript()],
-      parent: selectElement('.js-editor-container') as HTMLDivElement,
-    });
-  });
+  document.body.className = 'flex justify-center items-center min-h-screen';
+  const handler = (e: MouseEvent) => {
+    if (button) {
+      button.style.left = (e.offsetX ?? 100) + 'px';
+      // div.style.width = e.offsetX + 'px';
+    }
+  };
+  const setIsClick = () => (isClick = true);
+  const unsetIsClick = () => (isClick = false);
 </script>
 
-<div class="js-editor-container" />
+<button bind:this={main} on:mousemove={handler} class="bg-gray-200 w-1/2 h-96 relative">
+  <button bind:this={button} class="w-5 h-full bg-slate-800 absolute top-0 left-[50%] -translate-x-1/2" />
+  <div bind:this={div} class="w-1/2 bg-red-500 h-full" />
+</button>

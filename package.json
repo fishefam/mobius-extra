@@ -7,8 +7,9 @@
   "type": "module",
   "description": "",
   "scripts": {
-    "dev": "webpack",
-    "build:svelte": "vite build svelte",
+    "dev": "cross-env MODULES=part webpack",
+    "dev:all": "cross-env MODULES=all webpack",
+    "webpack:svelte": "vite build svelte --watch",
     "webext": "web-ext run --firefox-profile %APPDATA%/Mozilla/Firefox/Profiles/us9mxxgw.default-release --source-dir ./dist",
     "lint": "eslint ./src ./lib --fix"
   },
@@ -30,6 +31,7 @@
     "before-build-webpack": "^0.2.13",
     "codemirror": "^6.0.1",
     "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.54.0",
     "eslint-plugin-svelte": "^2.35.0",
     "eslint-plugin-unused-imports": "^3.0.0",
@@ -55,5 +57,8 @@
     "webpack-cli": "^5.1.4",
     "webpack-shell-plugin-next": "^2.3.1",
     "webpack-watch-files-plugin": "^1.2.1"
+  },
+  "dependencies": {
+    "@codemirror/lang-html": "^6.4.6"
   }
 }
