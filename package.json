@@ -27,6 +27,7 @@
     "@typescript-eslint/parser": "^6.11.0",
     "autoprefixer": "^10.4.16",
     "before-build-webpack": "^0.2.13",
+    "codemirror": "^6.0.1",
     "copy-webpack-plugin": "^11.0.0",
     "eslint": "^8.54.0",
     "eslint-plugin-svelte": "^2.35.0",
