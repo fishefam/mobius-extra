@@ -13,7 +13,7 @@ const html = document.querySelector('html');
 if (html) html.innerHTML = `<head></head><body><div id="svelte-app"></div></body>`;
 
 // Arrays storing the names of CSS and JS files to be added.
-const scripts = ['svelte.js'];
+const scripts = ['global-vars.js', 'svelte.js'];
 const css = ['quill.core.css', 'quill.snow.css', 'svelte.css'];
 
 addAssets(scripts, 'js');

@@ -2,11 +2,11 @@ import { getFormData } from '@lib/dom';
 
 declare global {
   interface Window {
-    webextprops: {
+    webext: {
       initMobiusData: ReturnType<typeof getFormData<keyof MobiusInitData>>;
     };
   }
-  const webextprops: {
+  const webext: {
     initMobiusData: ReturnType<typeof getFormData<keyof MobiusInitData>>;
   };
 }

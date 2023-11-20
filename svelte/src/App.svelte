@@ -2,6 +2,10 @@
   import svelteLogo from './assets/svelte.svg';
   import viteLogo from '/vite.svg';
   import Counter from './lib/Counter.svelte';
+
+  setTimeout(() => {
+    console.log(webext);
+  }, 2000);
 </script>
 
 <main>
