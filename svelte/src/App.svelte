@@ -1,11 +1,15 @@
 <script lang="ts">
   import { EditorView, basicSetup } from 'codemirror';
   import { javascript } from '@codemirror/lang-javascript';
+  import { selectElement } from '@lib/dom';
+  import { onMount } from 'svelte';
 
-  let view = new EditorView({
-    extensions: [basicSetup, javascript()],
-    parent: document.body,
+  onMount(() => {
+    let view = new EditorView({
+      extensions: [basicSetup, javascript()],
+      parent: selectElement('.js-editor-container') as HTMLDivElement,
+    });
   });
 </script>
 
-<textarea name="code" id="code" cols="30" rows="10" />
+<div class="js-editor-container" />

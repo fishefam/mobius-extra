@@ -30,7 +30,6 @@ const config = {
   },
   stats: { warnings: false },
   mode: 'production',
-  // devtool: 'source-map',
   plugins: [
     new WebpackShellPlugin({
       onBuildStart: { scripts: ['npm run build:svelte'], parallel: true },
@@ -62,7 +61,20 @@ const config = {
         './assets/**/*.html',
       ],
     }),
-    new RemovePlugin({ after: { include: ['./dist/assets/index.html'] } }),
+    new RemovePlugin({
+      after: {
+        include: ['./dist/assets/index.html', './dist/manifest.js'],
+        test: [
+          {
+            folder: './dist',
+            method: (absoluteItemPath) => {
+              return new RegExp(/\.LICENSE\./, 'mg').test(absoluteItemPath);
+            },
+            recursive: true,
+          },
+        ],
+      },
+    }),
   ],
   module: {
     rules: [
