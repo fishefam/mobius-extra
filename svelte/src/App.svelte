@@ -1,5 +1,11 @@
 <script lang="ts">
-  const { editor } = webext.initMobiusData;
+  import { EditorView, basicSetup } from 'codemirror';
+  import { javascript } from '@codemirror/lang-javascript';
+
+  let view = new EditorView({
+    extensions: [basicSetup, javascript()],
+    parent: document.body,
+  });
 </script>
 
-<main class="flex justify-center items-center font-bold text-3xl text-gray-500 h-screen bg-blue-500">{editor}</main>
+<textarea name="code" id="code" cols="30" rows="10" />
