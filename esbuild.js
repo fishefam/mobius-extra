@@ -6,7 +6,7 @@ import svelte from 'esbuild-svelte'
 const context = await esbuild.context({
   bundle: true,
   entryPoints: [
-    { in: 'page/app.css', out: 'interface' },
+    // { in: 'page/app.css', out: 'interface' },
     { in: 'page/index.ts', out: 'interface' },
     { in: 'page/index.html', out: 'index' },
     { in: 'bridge/init.ts', out: 'init' },
