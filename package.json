@@ -5,7 +5,7 @@
   "author": " Truong Nguyen",
   "type": "module",
   "scripts": {
-    "preinstall": "npx only-alow npm",
+    "preinstall": "npx only-allow npm",
     "dev": "node esbuild",
     "type-check": "svelte-check",
     "lint": "eslint . --fix",
