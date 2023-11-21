@@ -1,9 +1,14 @@
-import { createElement, getFormData, populateForm } from '@lib/dom';
-import { MobiusDisplayData, MobiusInitData, MobiusPreviewData, MobiusSaveData } from '@lib/types';
-import { serializeForm } from '@lib/utils';
+import type {
+  MobiusDisplayData,
+  MobiusInitData,
+  MobiusPreviewData,
+  MobiusSaveData,
+} from 'types/mobius'
+
+import { createElement, getFormData } from './dom'
 
 /* THIS REGEX PATTERN BELOW IS DEFINITIVE. ONLY CHANGE IF MOBIUS MAKES BREAK CHANGES TO THEIR HTML STRUCTURE */
-const MOBIUS_DATA_REGEX = /<form.*editQuestionForm(.|\n|\r|\n)*<\/form>/gi;
+const MOBIUS_DATA_REGEX = /<form.*editQuestionForm(.|\n|\r|\n)*<\/form>/gi
 
 /**
  * Initializes Mobius data by fetching the current page, extracting the Mobius form, and parsing its data.
@@ -12,26 +17,31 @@ const MOBIUS_DATA_REGEX = /<form.*editQuestionForm(.|\n|\r|\n)*<\/form>/gi;
  * @template T - The type of data to be returned.
  * @template U - The type of error data in case of failure.
  */
-export const initMobiusData = async <T = ReturnType<typeof getFormData<keyof MobiusInitData>>, U = unknown>(
+export const initMobiusData = async <
+  T = ReturnType<typeof getFormData<keyof MobiusInitData>>,
+  U = unknown,
+>(
   onSuccess?: (data: T) => void,
   onFailure?: (error: U) => void,
 ) => {
   try {
-    const container = createElement({ tag: 'div' });
-    const response = await fetch(location.href);
-    const text = await response.text();
-    const formHtml = text.match(MOBIUS_DATA_REGEX);
-    container.innerHTML = formHtml?.[0] ?? '';
-    const form = container.firstElementChild as HTMLFormElement;
+    const container = createElement({ tag: 'div' })
+    const response = await fetch(location.href)
+    const text = await response.text()
+    const formHtml = text.match(MOBIUS_DATA_REGEX)
+    container.innerHTML = formHtml?.[0] ?? ''
+    const form = container.firstElementChild as HTMLFormElement
     if (form) {
-      const data = getFormData<keyof MobiusInitData>(form);
-      const filteredData = Object.fromEntries(Object.entries(data).filter(([_, value]) => value !== ''));
-      if (onSuccess) onSuccess(filteredData as T);
+      const data = getFormData<keyof MobiusInitData>(form)
+      const filteredData = Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => value !== ''),
+      )
+      if (onSuccess) onSuccess(filteredData as T)
     }
   } catch (error) {
-    if (onFailure) onFailure(error as U);
+    if (onFailure) onFailure(error as U)
   }
-};
+}
 
 /**
  * Creates Mobius save data by merging the provided data with initial Mobius data.
@@ -65,8 +75,10 @@ export const makeMobiusSaveData = <T extends MobiusSaveData = MobiusSaveData>(
 ): T =>
   ({
     ...initData,
+    AntiCsrfToken:
+      initData.AntiCsrfToken ??
+      (document.cookie.match(/AntiCsrfToken=.*&?$/)?.[0] ?? '').split('=')[1],
     actionId: 'savedraft',
-    AntiCsrfToken: initData.AntiCsrfToken ?? (document.cookie.match(/AntiCsrfToken=.*&?$/)?.[0] ?? '').split('=')[1],
     algorithm,
     authorNotes,
     authorNotesEditor,
@@ -75,7 +87,7 @@ export const makeMobiusSaveData = <T extends MobiusSaveData = MobiusSaveData>(
     customCss,
     name,
     questionText,
-  }) as T;
+  }) as T
 
 /**
  * Creates Mobius preview data by merging the provided data with initial Mobius data.
@@ -109,18 +121,20 @@ export const makeMobiusPreviewData = <T extends MobiusPreviewData = MobiusPrevie
 ): T =>
   ({
     ...initData,
+    AntiCsrfToken:
+      initData.AntiCsrfToken ??
+      (document.cookie.match(/AntiCsrfToken=.*&?$/)?.[0] ?? '').split('=')[1],
     actionId: 'preview',
-    AntiCsrfToken: initData.AntiCsrfToken ?? (document.cookie.match(/AntiCsrfToken=.*&?$/)?.[0] ?? '').split('=')[1],
     algorithm,
     authorNotes,
     authorNotesEditor,
     comment,
     commentEditor,
     customCss,
+    editor: questionText,
     name,
     questionText,
-    editor: questionText,
-  }) as T;
+  }) as T
 
 /**
  * Creates Mobius display data by merging the provided data with initial Mobius data.
@@ -134,44 +148,53 @@ export const makeMobiusDisplayData = <T extends MobiusDisplayData = MobiusDispla
   { questionDefinition, version }: Pick<MobiusDisplayData, 'version' | 'questionDefinition'>,
 ): T =>
   ({
+    AntiCsrfToken:
+      initData.AntiCsrfToken ??
+      (document.cookie.match(/AntiCsrfToken=.*&?$/)?.[0] ?? '').split('=')[1],
     actionID: 'display',
     algorithmic: 'true',
-    AntiCsrfToken: initData.AntiCsrfToken ?? (document.cookie.match(/AntiCsrfToken=.*&?$/)?.[0] ?? '').split('=')[1],
     baseUrl: location.origin,
     error: 'false',
     errorMsg: '',
     questionDefinition,
     slideNumber: '',
     version,
-  }) as T;
+  }) as T
 
 /**
  * Serializes Mobius data to a jQuery serialized string.
  * @param data - The Mobius data to serialize.
  * @returns The serialized Mobius data.
  */
-export const serializeMobiusData = (data: MobiusSaveData | MobiusInitData | MobiusPreviewData | MobiusDisplayData) => {
-  const form = createElement({ tag: 'form' });
-  Object.entries(data).forEach(([key, value]) => populateForm(form, key, value));
-  return serializeForm(form);
-};
+export const serializeMobiusData = (
+  data: MobiusSaveData | MobiusInitData | MobiusPreviewData | MobiusDisplayData,
+) => {
+  let temp = ''
+  Object.entries(data).forEach(([key, value]) => (temp += `&${key}=${encodeURIComponent(value)}`))
+  return temp.slice(1)
+}
 
 /**
  * Queries Mobius document based on the action type and serialized data.
  * @param actionType - The type of action to perform.
- * @param jQuerySerializedData - The jQuery serialized data to send in the request.
+ * @param serializedData - The jQuery serialized data to send in the request.
  * @returns The fetch response.
  */
-export const queryMobiusDocument = (actionType: 'display' | 'save-or-get-preview-data', jQuerySerializedData: string) =>
+export const queryMobiusDocument = (
+  actionType: 'display' | 'save-or-get-preview-data',
+  serializedData: string,
+) =>
   fetch(
-    actionType === 'save-or-get-preview-data' ? '/qbeditor/SaveDynamicInline.do' : '/contentmanager/DisplayQuestion.do',
+    actionType === 'save-or-get-preview-data'
+      ? '/qbeditor/SaveDynamicInline.do'
+      : '/contentmanager/DisplayQuestion.do',
     {
+      body: serializedData,
       headers: {
+        'Accept': 'text/plain, */*; q=0.01',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'text/plain, */*; q=0.01',
       },
-      body: jQuerySerializedData,
       method: 'POST',
     },
-  );
+  )

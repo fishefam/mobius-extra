@@ -1,15 +1,14 @@
 {
   "manifest_version": 2,
+  "name": "mobius-ext",
   "version": "1.0.0",
-  "name": "mobius-extra",
   "content_scripts": [
     {
       "matches": ["*://*.mobius.cloud/qbeditor/*"],
-      "js": ["inject.js"],
+      "js": ["interceptor.js"],
       "run_at": "document_start"
     }
   ],
   "content_security_policy": "script-src 'self'; object-src 'self'",
-  "permissions": [],
-  "web_accessible_resources": ["assets/svelte.js", "assets/svelte.css", "assets/favicon.ico"]
+  "web_accessible_resources": ["interface.js", "interface.css"]
 }

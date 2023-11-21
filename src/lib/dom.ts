@@ -1,4 +1,6 @@
-import type { CreateElementFunctionParams } from './types';
+import type { AssetType, CreateElementFunctionParams } from 'types/function'
+
+import { isCSS, isScript, resolveUrl } from './util'
 
 /**
  * Adds one or more class names to an element.
@@ -7,7 +9,7 @@ import type { CreateElementFunctionParams } from './types';
  * @param classnames - One or more class names to add to the element.
  */
 export const addClasses = (element: HTMLElement, ...classnames: string[]) =>
-  classnames.forEach((c) => element.classList.add(c));
+  classnames.forEach((c) => element.classList.add(c))
 
 /**
  * Removes one or more class names from an element.
@@ -16,7 +18,7 @@ export const addClasses = (element: HTMLElement, ...classnames: string[]) =>
  * @param classnames - One or more class names to remove from the element.
  */
 export const removeClasses = (element: HTMLElement, ...classnames: string[]) =>
-  classnames.forEach((c) => element.classList.remove(c));
+  classnames.forEach((c) => element.classList.remove(c))
 
 /**
  * Selects the first element within the document that matches the specified selector.
@@ -25,7 +27,8 @@ export const removeClasses = (element: HTMLElement, ...classnames: string[]) =>
  * @param selector - A DOMString containing one or more selectors to match.
  * @returns The first element that matches the specified selector, or null if no matches are found.
  */
-export const selectElement = <T extends HTMLElement>(selector: string): T | null => document.querySelector(selector);
+export const selectElement = <T extends HTMLElement>(selector: string): T | null =>
+  document.querySelector(selector)
 
 /**
  * Retrieves the string value of a named field from a form.
@@ -40,12 +43,14 @@ export const getFormData = <T extends string | number, U = { [k in T]: FormDataE
 ): U => {
   const data = Object.fromEntries(
     new FormData(
-      typeof form === 'string' ? (selectElement<HTMLFormElement>(form) as HTMLFormElement | undefined) : form,
+      typeof form === 'string'
+        ? (selectElement<HTMLFormElement>(form) as HTMLFormElement | undefined)
+        : form,
     ),
-  ) as { [k in T]: FormDataEntryValue };
-  if (key) return data[key] as U;
-  return data as U;
-};
+  ) as { [k in T]: FormDataEntryValue }
+  if (key) return data[key] as U
+  return data as U
+}
 
 /**
  * Appends a specified node (HTMLElement) to a target HTMLElement.
@@ -58,7 +63,7 @@ export const getFormData = <T extends string | number, U = { [k in T]: FormDataE
  * const parentDiv = document.getElementById('parentDiv');
  * attachElement(newDiv, parentDiv);
  */
-export const attachElement = (node: HTMLElement, target: HTMLElement) => target.appendChild(node);
+export const attachElement = (node: HTMLElement, target: HTMLElement) => target.appendChild(node)
 
 /**
  * Creates a new HTML element of a given type with specified attributes, classes, an ID, and optionally appends it to a specified parent.
@@ -88,19 +93,18 @@ export const createElement = <T extends keyof HTMLElementTagNameMap>({
   parent,
   text,
 }: CreateElementFunctionParams<T>): HTMLElementTagNameMap[T] => {
-  const element = document.createElement<T>(tag as T);
-  if (id) element.id = id;
-  if (text) element.textContent = text;
-  if (classList) classList.forEach((c) => element.classList.add(c));
-  if (attributes) attributes.forEach(({ name, value }) => element.setAttribute(name, value));
+  const element = document.createElement<T>(tag as T)
+  if (id) element.id = id
+  if (text) element.textContent = text
+  if (classList) classList.forEach((c) => element.classList.add(c))
+  if (attributes) attributes.forEach(({ name, value }) => element.setAttribute(name, value))
   if (parent && typeof parent === 'string') {
-    const parentElement = selectElement(parent);
-    if (parentElement) attachElement(element, parentElement);
-    if (!parentElement) console.log(`The parent element of the new element below is null\n`, element);
+    const parentElement = selectElement(parent)
+    if (parentElement) attachElement(element, parentElement)
   }
-  if (parent && typeof parent !== 'string') attachElement(element, parent);
-  return element;
-};
+  if (parent && typeof parent !== 'string') attachElement(element, parent)
+  return element
+}
 
 /**
  * Adds a hidden input field to a specified form.
@@ -116,12 +120,40 @@ export const createElement = <T extends keyof HTMLElementTagNameMap>({
  */
 export const populateForm = (form: HTMLFormElement, name: string, value: string) => {
   const input = createElement({
-    tag: 'input',
     attributes: [
       { name: 'type', value: 'hidden' },
       { name: 'name', value: name },
       { name: 'value', value },
     ],
-  });
-  form.appendChild(input);
-};
+    tag: 'input',
+  })
+  form.appendChild(input)
+}
+
+/**
+ * Adds an array of assets to the document.
+ *
+ * @param assets - An array of asset filenames to be added.
+ * @param type - The type of the assets ('css' or 'js').
+ */
+export function addAssets(assets: string[], type: AssetType, customUrl?: string) {
+  for (const asset of assets) addAsset(asset, type, customUrl)
+}
+
+/**
+ * Creates and appends a script or link element to the document head for the given asset.
+ *
+ * @param asset - The filename of the asset to be added.
+ * @param type - The type of the asset ('css' or 'js').
+ */
+function addAsset(asset: string, type: AssetType, customUrl?: string) {
+  const path = customUrl ? `${customUrl}${asset}` : resolveUrl(asset)
+  const element = document.createElement(type === 'js' ? 'script' : 'link')
+  if (isScript(element)) element.src = path
+  if (isCSS(element)) {
+    element.rel = 'stylesheet'
+    element.href = path
+  }
+  document.head.append(element)
+  // console.log(`Injection: ${path}`);
+}
