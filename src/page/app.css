@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.editor__tab-item:first-of-type {
+  @apply absolute right-0;
+}
+
+.editor__tab-item:first-of-type > button {
+  @apply hover:cursor-default;
+}
+
+.editor > *:nth-child(3) {
+  @apply rounded-none mt-0 p-0;
+}

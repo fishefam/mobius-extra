@@ -7,7 +7,9 @@
   hotReload()
 </script>
 
-<Tabs />
+<main class="editor h-screen">
+  <Tabs />
+</main>
 
 <style>
   :global(body) {
