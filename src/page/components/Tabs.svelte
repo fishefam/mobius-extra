@@ -2,15 +2,23 @@
   import { useContentHeight } from '@page/hooks/tabs'
   import { TabItem, Tabs } from 'flowbite-svelte'
   import {
-    BookmarkSolid,
+    BookSolid,
     CodeSolid,
     ExclamationCircleSolid,
     QuestionCircleSolid,
   } from 'flowbite-svelte-icons'
+  import type { TextCategory } from 'types/mobius'
 
   import Grid from './Grid.svelte'
 
   const { name } = webext.initMobiusData
+  const tabs: { category: TextCategory; content: string; open?: boolean }[] = [
+    { category: 'question', content: 'Question', open: true },
+    { category: 'feedback', content: 'Feedback' },
+    { category: 'algorithm', content: 'Algorithm' },
+    { category: 'author-notes', content: 'Author Notes' },
+  ]
+
   useContentHeight()
 </script>
 
@@ -20,32 +28,25 @@
       {name}
     </div>
   </TabItem>
-  <TabItem class="editor__tab-item" open>
-    <div slot="title" class="flex items-center gap-2">
-      <QuestionCircleSolid size="sm" />
-      Question
-    </div>
-    <Grid type="question" />
-  </TabItem>
-  <TabItem class="editor__tab-item">
-    <div slot="title" class="flex items-center gap-2">
-      <BookmarkSolid size="sm" />
-      Feedback
-    </div>
-    <Grid type="feedback" />
-  </TabItem>
-  <TabItem class="editor__tab-item">
-    <div slot="title" class="flex items-center gap-2">
-      <CodeSolid size="sm" />
-      Algorithm
-    </div>
-    <Grid type="algorithm" />
-  </TabItem>
-  <TabItem class="editor__tab-item">
-    <div slot="title" class="flex items-center gap-2">
-      <ExclamationCircleSolid size="sm" />
-      Author Notes
-    </div>
-    <Grid type="author-notes" />
-  </TabItem>
+  {#each tabs as { category, content, open }}
+    <TabItem
+      class={`editor__tab-item`}
+      activeClasses="inline-block text-sm font-medium text-center p-4 text-red-500 border-b-2 border-red-500"
+      {open}
+    >
+      <div slot="title" class="flex items-center gap-2">
+        {#if category === 'question'}
+          <QuestionCircleSolid size="sm" />
+        {:else if category === 'feedback'}
+          <BookSolid size="sm" />
+        {:else if category === 'algorithm'}
+          <CodeSolid size="sm" />
+        {:else}
+          <ExclamationCircleSolid size="sm" />
+        {/if}
+        {content}
+      </div>
+      <Grid {category} />
+    </TabItem>
+  {/each}
 </Tabs>
