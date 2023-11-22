@@ -28,7 +28,7 @@ export const removeClasses = (element: HTMLElement, ...classnames: string[]) =>
  * @returns The first element that matches the specified selector, or null if no matches are found.
  */
 export const selectElement = <T extends HTMLElement>(selector: string): T | null =>
-  document.querySelector(selector)
+  document.querySelector<T>(selector)
 
 /**
  * Retrieves the string value of a named field from a form.

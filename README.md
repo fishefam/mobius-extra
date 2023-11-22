@@ -34,7 +34,7 @@ To install Mobius-ext:
 
 1. Clone the repository to your local machine.
 2. Run `npm install` to install dependencies.
-3. Follow additional setup instructions (if any).
+3. Manually remove the `exports` field from the `package.json` of the `flowbite-svelte` library to resolve build issues.
 
 ## Usage
 
