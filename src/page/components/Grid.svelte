@@ -5,6 +5,8 @@
   let leftItem: HTMLElement
   let rightItem: HTMLElement
 
+  const startWidthLeftPercent = 40
+
   const onMouseDown = (e: MouseEvent) => {
     startX = e.clientX
     startWidthLeft = leftItem.offsetWidth
@@ -27,8 +29,12 @@
   }
 </script>
 
-<div class={`w-full flex h-full p-4`} style="height: calc(100vh - 3.25rem);">
-  <div class="flex-grow border rounded-l shadow" bind:this={leftItem}>
+<div class={`w-full flex h-full p-4`} style="height: calc(100vh - 3.5rem);">
+  <div
+    class="flex-grow border rounded-l shadow"
+    bind:this={leftItem}
+    style={`width: ${startWidthLeftPercent}%;`}
+  >
     <slot name="left" />
   </div>
   <div
@@ -37,7 +43,11 @@
     role="button"
     tabindex="-1"
   ></div>
-  <div class="flex-grow border rounded-r shadow overflow-hidden" bind:this={rightItem}>
+  <div
+    class="flex-grow border rounded-r shadow"
+    bind:this={rightItem}
+    style={`width: ${100 - startWidthLeftPercent}%;`}
+  >
     <slot name="right" />
   </div>
 </div>

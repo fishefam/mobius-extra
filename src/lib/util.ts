@@ -1,5 +1,3 @@
-import type { TextCategory } from 'types/mobius'
-
 export const resolveUrl = (path: string) => browser.runtime.getURL(path)
 export const setStorageItems = (...items: [string, string][]) =>
   items.forEach(([key, value]) => localStorage.setItem(key, value))
@@ -11,11 +9,10 @@ export const getStorageItem = (key: string) => localStorage.getItem(key)
  * @param text - The HTML string to be processed.
  * @returns Script content from the HTML string.
  */
-export const extractCssString = (text: string): string =>
+export const extractCssStrings = (text: string, noTags = false): string[] =>
   text
-    .match(/<style(.|\n)*\/style>/gim)
-    ?.map((s) => s.trim())
-    .join('\n') ?? ''
+    .match(noTags ? /(?<=<style\b[^>]*>)(.*?)(?=<\/style>)/gis : /<style\b[^>]*>(.*?)<\/style>/gis)
+    ?.map((s) => s.trim()) ?? []
 
 /**
  * extracts content within script tags from the provided html string.
@@ -23,11 +20,12 @@ export const extractCssString = (text: string): string =>
  * @param text - The HTML string to be processed.
  * @returns Script content from the HTML string.
  */
-export const extractScriptString = (text: string): string =>
+export const extractScriptStrings = (text: string, noTags = false): string[] =>
   text
-    .match(/<script(.|\n)*\/script>/gim)
-    ?.map((s) => s.trim())
-    .join('\n') ?? ''
+    .match(
+      noTags ? /(?<=<script\b[^>]*>)(.*?)(?=<\/script>)/gis : /<script\b[^>]*>(.*?)<\/script>/gis,
+    )
+    ?.map((s) => s.trim()) ?? []
 
 /**
  * Extracts text content outside of script tags from the provided HTML string.
@@ -37,13 +35,12 @@ export const extractScriptString = (text: string): string =>
  */
 export const extractHtmlString = (text: string): string => {
   let temp = text.slice()
-  const firstScriptMatch = temp.match(/<script(.|\n)*\/script>/gim)?.[0] ?? ''
-  const firstCssMatch = temp.match(/<style(.|\n)*\/style>/gim)?.[0] ?? ''
-  temp = temp.replace(firstScriptMatch, '').replace(firstCssMatch, '').trim()
-  if (temp.match(/<script>(.|\n)*<\/script>/gim)?.length) extractHtmlString(temp)
+  const scripts = extractScriptStrings(temp)
+  const cssStrings = extractCssStrings(temp)
+  for (const script of scripts) temp = temp.replace(script, '\n')
+  for (const css of cssStrings) temp = temp.replace(css, '\n')
   return temp
 }
-
 export const removeWrapperTag = (html: string, markingAttribute = 'data--wrapper') => {
   const openingTag = html
     .trim()
