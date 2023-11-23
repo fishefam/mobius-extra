@@ -17,4 +17,7 @@
   })
 </script>
 
-<div class="editor__preview-content grid place-items-center h-full py-6 px-3" bind:this={div}></div>
+<div
+  class="editor__preview-content grid place-items-center h-full py-6 px-3 text-gray-600"
+  bind:this={div}
+></div>
