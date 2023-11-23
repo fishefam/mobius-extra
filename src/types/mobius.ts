@@ -1,7 +1,7 @@
-export type TextCategory = 'question' | 'feedback' | 'algorithm' | 'author-notes'
-export type TextType = 'html' | 'css' | 'javascript'
+export type Section = 'question' | 'feedback' | 'algorithm' | 'authornotes'
+export type Type = 'html' | 'css' | 'javascript'
 
-export type MobiusEditorQueryEndpoint =
+export type MobiusEditorEndpoint =
   | '/qbeditor/SaveDynamicInline.do'
   | '/contentmanager/DisplayQuestion.do'
 

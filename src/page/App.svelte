@@ -2,18 +2,14 @@
   import { hotReload } from '@lib/util'
 
   import Tabs from './components/Tabs.svelte'
+  import { useStore } from './hooks/state'
 
   // Remove this call in production
   hotReload()
+
+  useStore()
 </script>
 
-<main class="editor h-screen">
+<main class="editor h-screen font-sans">
   <Tabs />
 </main>
-
-<style>
-  :global(body) {
-    font-family: 'Lucida Sans', Arial, sans-serif;
-    height: 100vh;
-  }
-</style>

@@ -1,3 +1,5 @@
+import type { TextCategory } from 'types/mobius'
+
 export const resolveUrl = (path: string) => browser.runtime.getURL(path)
 export const setStorageItems = (...items: [string, string][]) =>
   items.forEach(([key, value]) => localStorage.setItem(key, value))
@@ -54,9 +56,21 @@ export const removeWrapperTag = (html: string, markingAttribute = 'data--wrapper
     .match(/<\/.*>$/gi)?.[0]
     .slice(2, -1)
   if (openingTag && closingTag && openingTag === closingTag)
-    return html.trim().replace(/(^<.*>)|(<\/.*>$)/gi, '')
+    return html
+      .trim()
+      .replace(/(^<.*>)|(<\/.*>$)/gi, '')
+      .trim()
   return html
+    .trim()
+    .replace(/<style.*>|<\/style>|<script.*>|<\/script>/gim, '')
+    .trim()
 }
+
+export const wrapHtml = (html: string, uid: string, markingAttribute = 'data--wrapper') =>
+  `<div ${markingAttribute}="${uid}">${html}</div>`
+
+export const wrapCss = (css: string) => `<style>${css}</style>`
+export const wrapJavascript = (script: string) => `<script>${script}</script>`
 
 /**
  * Determines if the provided element is a HTMLScriptElement.
@@ -79,10 +93,19 @@ export const isCSS = (element: HTMLLinkElement | unknown): element is HTMLLinkEl
 }
 
 export const hotReload = () => {
-  // console.clear()
-  // console.log('Development Session Started.\n\nRemove hotReload() in App.svelte in production.')
+  console.clear()
+  console.log('Development Session Started.\n\nRemove hotReload() in App.svelte in production.')
   new EventSource('http://localhost:4224/esbuild').addEventListener(
     'change',
     () => (window.location = window.location),
   )
 }
+
+export const getGlobalVarKey = (...names: string[]) => names.join('_')
+
+export const isWebCode = (category: TextCategory) => /question|feedback/gi.test(category)
+
+export const joinCode = (html: string, css?: string, script?: string) =>
+  `${wrapHtml(html, webext.initMobiusData.uid ?? '')}\n${wrapCss(css ?? '')}\n${wrapJavascript(
+    script ?? '',
+  )}`

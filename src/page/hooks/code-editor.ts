@@ -8,20 +8,18 @@ import {
   removeWrapperTag,
 } from '@lib/util'
 import { basicSetup, EditorView } from 'codemirror'
+import babelParser from 'prettier/plugins/babel'
 import htmlParser from 'prettier/plugins/html'
 import { format } from 'prettier/standalone'
 import { onMount } from 'svelte'
 import { ayuLight } from 'thememirror'
+import type { TextCategory, TextType } from 'types/mobius'
 
-export const useEditorSetup = (
-  type: 'question' | 'feedback' | 'algorithm',
-  mode: 'css' | 'html' | 'script',
-  selector: string,
-) => {
+export const useEditorSetup = (category: TextCategory, type: TextType, selector: string) => {
   const state = EditorState.create({ extensions: [html(), basicSetup, ayuLight] })
   const view = new EditorView({ state })
   onMount(async () => {
-    const text = await useInitMobiusData(type, mode)
+    const text = await useInitMobiusData(category, type)
     const parent = selectElement(selector) ?? createElement({ tag: 'div' })
     const transaction = view.state.update({ changes: { from: 0, insert: text } })
     view.dispatch(transaction)
@@ -30,22 +28,23 @@ export const useEditorSetup = (
   return { state, view }
 }
 
-export const useInitMobiusData = async (
-  type: 'question' | 'feedback' | 'algorithm',
-  mode: 'css' | 'html' | 'script',
-) => {
-  const data = webext.initMobiusData[type === 'question' ? 'editor' : 'commentEditor'] ?? ''
-  const htmlString = type !== 'algorithm' ? removeWrapperTag(extractHtmlString(data)).trim() : ''
-  const scriptString = type !== 'algorithm' ? removeWrapperTag(extractScriptString(data)) : ''
-  const cssString = type !== 'algorithm' ? removeWrapperTag(extractCssString(data)) : ''
+export const useInitMobiusData = async (category: TextCategory, type: TextType) => {
+  const data = webext.initMobiusData[category === 'question' ? 'editor' : 'commentEditor'] ?? ''
+  const htmlString =
+    category === 'algorithm' ? removeWrapperTag(extractHtmlString(data)).trim() : ''
+  const scriptString = category === 'algorithm' ? removeWrapperTag(extractScriptString(data)) : ''
+  const cssString = category === 'algorithm' ? removeWrapperTag(extractCssString(data)) : ''
   const text =
-    type === 'algorithm'
+    category === 'algorithm'
       ? webext.initMobiusData.algorithm ?? ''
-      : await format(mode === 'html' ? htmlString : mode === 'script' ? scriptString : cssString, {
-          htmlWhitespaceSensitivity: 'ignore',
-          parser: 'html',
-          plugins: [htmlParser],
-          printWidth: 100,
-        })
+      : await format(
+          type === 'html' ? htmlString : type === 'javascript' ? scriptString : cssString,
+          {
+            htmlWhitespaceSensitivity: 'ignore',
+            parser: type === 'javascript' ? 'babel' : 'html',
+            plugins: [htmlParser, babelParser],
+            printWidth: 100,
+          },
+        )
   return text
 }

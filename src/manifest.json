@@ -5,10 +5,10 @@
   "content_scripts": [
     {
       "matches": ["*://*.mobius.cloud/qbeditor/*"],
-      "js": ["interceptor.js"],
+      "js": ["index.js"],
       "run_at": "document_start"
     }
   ],
   "content_security_policy": "script-src 'self'; object-src 'self'",
-  "web_accessible_resources": ["interface.js", "interface.css"]
+  "web_accessible_resources": ["app.js", "app.css"]
 }
