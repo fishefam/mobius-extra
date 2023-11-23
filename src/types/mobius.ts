@@ -1,11 +1,8 @@
 export type Section = 'question' | 'feedback' | 'algorithm' | 'authornotes'
-export type Type = 'html' | 'css' | 'javascript'
 
-export type MobiusEditorEndpoint =
-  | '/qbeditor/SaveDynamicInline.do'
-  | '/contentmanager/DisplayQuestion.do'
+export type ActionEndpoint = '/qbeditor/SaveDynamicInline.do' | '/contentmanager/DisplayQuestion.do'
 
-export interface MobiusSaveData {
+export interface SaveData {
   AntiCsrfToken?: string
   actionId: 'savedraft'
   adaptive?: string
@@ -23,7 +20,7 @@ export interface MobiusSaveData {
   uid?: string
 }
 
-export interface MobiusInitData extends Omit<MobiusSaveData, 'actionId'> {
+export interface InitData extends Omit<SaveData, 'actionId'> {
   a1?: string
   a2?: string
   a3?: string
@@ -49,13 +46,11 @@ export interface MobiusInitData extends Omit<MobiusSaveData, 'actionId'> {
   mapleMode?: string
 }
 
-export interface MobiusPreviewData
-  extends Omit<MobiusSaveData, 'actionId'>,
-    Omit<MobiusInitData, 'actionId'> {
+export interface PreviewData extends Omit<SaveData, 'actionId'>, Omit<InitData, 'actionId'> {
   actionId: 'preview'
 }
 
-export interface MobiusDisplayData extends Pick<MobiusSaveData, 'AntiCsrfToken'> {
+export interface DisplayData extends Pick<SaveData, 'AntiCsrfToken'> {
   actionID: 'display'
   algorithmic?: string
   baseUrl?: string

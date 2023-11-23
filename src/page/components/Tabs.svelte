@@ -6,43 +6,46 @@
     ExclamationCircleSolid,
     QuestionCircleSolid,
   } from 'flowbite-svelte-icons'
-  import type { TextCategory } from 'types/mobius'
+  import { store_data, store_section } from 'page/store'
+  import type { Section } from 'types/mobius'
 
-  const tabs: { category: TextCategory; content: string; open?: boolean }[] = [
-    { category: 'question', content: 'Question', open: true },
-    { category: 'feedback', content: 'Feedback' },
-    { category: 'algorithm', content: 'Algorithm' },
-    { category: 'author-notes', content: 'Author Notes' },
+  let name: string
+
+  const tabs: { section: Section; content: string; open?: boolean }[] = [
+    { content: 'Question', open: true, section: 'question' },
+    { content: 'Feedback', section: 'feedback' },
+    { content: 'Algorithm', section: 'algorithm' },
+    { content: 'Author Notes', section: 'authornotes' },
   ]
 
-  // useContentHeight()
+  store_data.subscribe((state) => (name = state.name ?? ''))
 </script>
 
 <Tabs class="editor__tabs" style="underline">
-  <TabItem class="editor__tab-item editor__tab-item--disabled" disabled>
+  <TabItem class="editor__tab-item editor__tab-item--disabled hover:bg-transparent" disabledv>
     <div slot="title" class="flex items-center gap-2 hover:cursor-default">
       {name}
     </div>
   </TabItem>
-  {#each tabs as { category, content, open }}
+  {#each tabs as { section, content, open }}
     <TabItem
       class="editor__tab-item"
-      activeClasses="transition-all inline-block text-sm font-medium text-center p-4 text-red-500 border-b-2 border-red-500"
       {open}
+      activeClasses="inline-block text-sm font-medium text-center p-4 text-red-600 border-b-2 border-red-600 active"
+      on:click={() => store_section.set(section)}
     >
       <div slot="title" class="flex items-center gap-2">
-        {#if category === 'question'}
+        {#if section === 'question'}
           <QuestionCircleSolid size="sm" />
-        {:else if category === 'feedback'}
+        {:else if section === 'feedback'}
           <BookSolid size="sm" />
-        {:else if category === 'algorithm'}
+        {:else if section === 'algorithm'}
           <CodeSolid size="sm" />
         {:else}
           <ExclamationCircleSolid size="sm" />
         {/if}
         {content}
       </div>
-      <!-- <Grid {category} /> -->
     </TabItem>
   {/each}
 </Tabs>

@@ -1,4 +1,4 @@
-import type { AssetType, CreateElementFunctionParams } from 'types/function'
+import type { Params_createElement } from 'types/utils'
 
 import { isCSS, isScript, resolveUrl } from './util'
 
@@ -37,19 +37,15 @@ export const selectElement = <T extends HTMLElement>(selector: string): T | null
  * @param key - The name of the form field whose value is to be retrieved.
  * @returns The string value of the form field if found, or all values.
  */
-export const getFormData = <T extends string | number, U = { [k in T]: FormDataEntryValue }>(
-  form: HTMLFormElement | string,
-  key?: T,
-): U => {
+export const getFormData = <T>(form: HTMLFormElement | string): T => {
   const data = Object.fromEntries(
     new FormData(
       typeof form === 'string'
         ? (selectElement<HTMLFormElement>(form) as HTMLFormElement | undefined)
         : form,
     ),
-  ) as { [k in T]: FormDataEntryValue }
-  if (key) return data[key] as U
-  return data as U
+  )
+  return data as T
 }
 
 /**
@@ -92,7 +88,7 @@ export const createElement = <T extends keyof HTMLElementTagNameMap>({
   attributes,
   parent,
   text,
-}: CreateElementFunctionParams<T>): HTMLElementTagNameMap[T] => {
+}: Params_createElement<T>): HTMLElementTagNameMap[T] => {
   const element = document.createElement<T>(tag as T)
   if (id) element.id = id
   if (text) element.textContent = text
@@ -134,21 +130,21 @@ export const populateForm = (form: HTMLFormElement, name: string, value: string)
  * Adds an array of assets to the document.
  *
  * @param assets - An array of asset filenames to be added.
- * @param type - The type of the assets ('css' or 'js').
+ * @param ext - The type of the assets ('css' or 'js').
  */
-export function addAssets(assets: string[], type: AssetType, customUrl?: string) {
-  for (const asset of assets) addAsset(asset, type, customUrl)
+export function injectScript(assets: string[]) {
+  for (const asset of assets) addAsset(asset)
 }
 
 /**
  * Creates and appends a script or link element to the document head for the given asset.
  *
  * @param asset - The filename of the asset to be added.
- * @param type - The type of the asset ('css' or 'js').
+ * @param ext - The type of the asset ('css' or 'js').
  */
-function addAsset(asset: string, type: AssetType, customUrl?: string) {
-  const path = customUrl ? `${customUrl}${asset}` : resolveUrl(asset)
-  const element = document.createElement(type === 'js' ? 'script' : 'link')
+function addAsset(asset: string) {
+  const path = resolveUrl(asset)
+  const element = document.createElement('script')
   if (isScript(element)) element.src = path
   if (isCSS(element)) {
     element.rel = 'stylesheet'

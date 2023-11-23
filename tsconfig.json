@@ -2,12 +2,7 @@
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "src",
-    "paths": {
-      "@lib/*": ["lib/*"],
-      "@page/*": ["page/*"],
-      "@bridge/*": ["bridge/*"]
-    },
-    "typeRoots": ["node_modules/@types", "node_modules/web-ext-types", "app.d.ts"],
+    "typeRoots": ["node_modules/@types", "node_modules/web-ext-types", "index.ts"],
     "noEmit": true
   },
   "exclude": ["node_modules/*"]
