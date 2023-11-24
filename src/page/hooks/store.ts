@@ -27,7 +27,7 @@ export const usePopulateData = () =>
 
 export const usePopulateCodeEditorState = () =>
   onMount(() =>
-    store_data.subscribe(({ algorithm, authorNotes, editor, commentEditor }) => {
+    store_data.subscribe(async ({ algorithm, authorNotes, editor, commentEditor }) => {
       const codeMirrorViews = [
         store_algorithm_code_mirror_view,
         store_author_notes_code_mirror_view,

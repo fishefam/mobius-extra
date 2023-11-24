@@ -29,7 +29,9 @@
     <ToolbarGroup>
       {#each typeButtons as { tooltip, type }}
         <div
-          class={`editor__toolbar-button editor__button-${type} rounded`}
+          class={`editor__toolbar-button editor__button-${type} rounded ${
+            type === 'html' ? 'bg-indigo-300' : ''
+          }`}
           role="button"
           tabindex="-1"
           on:mouseenter={() => (tooltipText = tooltip)}

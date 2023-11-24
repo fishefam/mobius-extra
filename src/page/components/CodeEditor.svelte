@@ -11,13 +11,16 @@
     store_section,
     store_type,
   } from 'page/store'
-  import { onMount } from 'svelte'
-  import { get } from 'svelte/store'
+  import { onDestroy, onMount } from 'svelte'
+  import { get, type Unsubscriber } from 'svelte/store'
 
   let div: HTMLDivElement
+  let unsubscribeStoreSection: Unsubscriber
+  let unsubscribeStoreType: Unsubscriber
+  let wrapperClassname: string
 
   onMount(() => {
-    store_section.subscribe((section) => {
+    unsubscribeStoreSection = store_section.subscribe((section) => {
       let isNotSet = true
       const type = get(store_type)
       div.replaceChildren('')
@@ -53,8 +56,12 @@
         div.appendChild(store_feedback_javascript_code_mirror_view.dom)
         isNotSet = false
       }
+      wrapperClassname =
+        section === 'question' || section === 'feedback'
+          ? 'editor__code-editor-container'
+          : 'editor__text-editor-container'
     })
-    store_type.subscribe((type) => {
+    unsubscribeStoreType = store_type.subscribe((type) => {
       let isNotSet = true
       const section = get(store_section)
       div.replaceChildren('')
@@ -92,6 +99,20 @@
       }
     })
   })
+
+  onDestroy(() => {
+    if (unsubscribeStoreType) unsubscribeStoreType()
+    if (unsubscribeStoreSection) unsubscribeStoreSection()
+  })
 </script>
 
-<div class="text-gray-600" bind:this={div}></div>
+<div class={`text-gray-600 ${wrapperClassname}`} bind:this={div}></div>
+
+<style>
+  :global(.editor__code-editor-container .cm-scroller) {
+    height: 560px !important;
+  }
+  :global(.editor__text-editor-container .cm-scroller) {
+    height: 600px !important;
+  }
+</style>
