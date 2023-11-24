@@ -33,6 +33,7 @@ const context = await esbuild.context({
   minifyWhitespace: false,
   outdir: 'dist',
   plugins: [svelte({ preprocess: sveltePreprocess() }), clean({ patterns: ['dist'] }), postcss({})],
+  sourcemap: true,
   treeShaking: true,
 })
 

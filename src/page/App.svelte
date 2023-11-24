@@ -9,7 +9,7 @@
   import PreviewContent from './components/PreviewContent.svelte'
   import PreviewToolbar from './components/PreviewToolbar.svelte'
   import Tabs from './components/Tabs.svelte'
-  import { usePopulateData } from './hooks/store'
+  import { usePopulateCodeEditorState, usePopulateData } from './hooks/store'
   import { store_section } from './store'
 
   // Remove this call in production
@@ -18,6 +18,7 @@
   let showCodeToolbar = true
 
   usePopulateData()
+  usePopulateCodeEditorState()
 
   store_section.subscribe((state) => {
     if (state === 'question' || state === 'feedback') showCodeToolbar = true

@@ -25,7 +25,7 @@
 </script>
 
 {#if show}
-  <Toolbar color="indigo" embedded={false} class="rounded-none p-2 sticky top-0 left-0">
+  <Toolbar color="indigo" embedded={false} class="rounded-none p-2 sticky top-0 left-0 z-10">
     <ToolbarGroup>
       {#each typeButtons as { tooltip, type }}
         <div
