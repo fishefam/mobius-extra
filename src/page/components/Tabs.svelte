@@ -6,10 +6,12 @@
     ExclamationCircleSolid,
     QuestionCircleSolid,
   } from 'flowbite-svelte-icons'
+  import { useSubscribe } from 'page/hooks/store'
   import { store_data, store_section } from 'page/store'
   import type { Section } from 'types/mobius'
 
-  let name: string
+  export let classname: string
+  let title: string
 
   const tabs: { section: Section; content: string; open?: boolean }[] = [
     { content: 'Question', open: true, section: 'question' },
@@ -18,13 +20,13 @@
     { content: 'Author Notes', section: 'authornotes' },
   ]
 
-  store_data.subscribe((state) => (name = state.name ?? ''))
+  useSubscribe({ func: (state) => (title = state.name ?? ''), store: store_data })
 </script>
 
-<Tabs class="editor__tabs" style="underline">
+<Tabs class={classname} style="underline">
   <TabItem class="editor__tab-item editor__tab-item--disabled hover:bg-transparent" disabledv>
     <div slot="title" class="flex items-center gap-2 hover:cursor-default">
-      {name}
+      {title}
     </div>
   </TabItem>
   {#each tabs as { section, content, open }}

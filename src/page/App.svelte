@@ -1,5 +1,7 @@
 <script lang="ts">
   import { hotReload } from 'lib/util'
+  import { Circle2 } from 'svelte-loading-spinners'
+  import type { Section } from 'types/mobius'
 
   import CodeEditor from './components/CodeEditor.svelte'
   import CodeToolbar from './components/CodeToolbar.svelte'
@@ -9,33 +11,50 @@
   import PreviewContent from './components/PreviewContent.svelte'
   import PreviewToolbar from './components/PreviewToolbar.svelte'
   import Tabs from './components/Tabs.svelte'
-  import { usePopulateCodeEditorState, usePopulateData } from './hooks/store'
-  import { store_section } from './store'
+  import { usePopulateData, usePrepareCodeEditor, useSubscribe } from './hooks/store'
+  import { store_is_initiating, store_section } from './store'
 
   // Remove this call in production
   hotReload()
 
   let showCodeToolbar = true
+  let isInitiating = true
 
+  useSubscribe({
+    func: (state) => {
+      if (!state) isInitiating = false
+    },
+    store: store_is_initiating,
+  })
   usePopulateData()
-  usePopulateCodeEditorState()
-
-  store_section.subscribe((state) => {
-    if (state === 'question' || state === 'feedback') showCodeToolbar = true
-    if (state === 'algorithm' || state === 'authornotes') showCodeToolbar = false
+  usePrepareCodeEditor()
+  useSubscribe({
+    func: (state) => {
+      const codeSections: Section[] = ['question', 'feedback']
+      if (codeSections.includes(state)) showCodeToolbar = true
+      if (!codeSections.includes(state)) showCodeToolbar = false
+    },
+    store: store_section,
   })
 </script>
 
-<div class="editor font-sans h-screen">
-  <Tabs />
-  <Grid>
-    <Editor slot="left">
-      <CodeToolbar slot="top" show={showCodeToolbar} />
-      <CodeEditor slot="bottom" />
-    </Editor>
-    <Preview slot="right">
-      <PreviewToolbar slot="top" />
-      <PreviewContent slot="bottom" />
-    </Preview>
-  </Grid>
-</div>
+{#if isInitiating}
+  <div class="loader--full-screen h-screen w-screen grid place-items-center">
+    <Circle2 size="120" unit="px" />
+  </div>
+{/if}
+{#if !isInitiating}
+  <div class="editor font-sans h-screen">
+    <Tabs classname="editor__tabs" />
+    <Grid classname="editor__grid">
+      <Editor classname="editor__editor-wrapper" slot="left">
+        <CodeToolbar classname="editor__code-toolbar" slot="top" show={showCodeToolbar} />
+        <CodeEditor classname="editor__code-editor" slot="bottom" />
+      </Editor>
+      <Preview classname="editor__preview-wrapper" slot="right">
+        <PreviewToolbar classname="editor__preview-toolbar" slot="top" />
+        <PreviewContent classname="editor__preview-content" slot="bottom" />
+      </Preview>
+    </Grid>
+  </div>
+{/if}

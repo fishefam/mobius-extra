@@ -1,11 +1,14 @@
 <script lang="ts">
+  export let classname: string
   let startX: number
   let startWidthLeft: number
   let startWidthRight: number
   let leftItem: HTMLElement
   let rightItem: HTMLElement
 
-  const startWidthLeftPercent = 40
+  const leftMinWidth = 375
+  const rightMinWidth = 2
+  const startLeftWidthPercent = 40
 
   const onMouseDown = (e: MouseEvent) => {
     startX = e.clientX
@@ -17,7 +20,7 @@
 
   const onMouseMove = (e: MouseEvent) => {
     const dx = e.clientX - startX
-    if (startWidthLeft + dx > 375) {
+    if (startWidthLeft + dx > leftMinWidth && startWidthRight - dx > rightMinWidth) {
       leftItem.style.width = `${startWidthLeft + dx}px`
       rightItem.style.width = `${startWidthRight - dx}px`
     }
@@ -29,11 +32,11 @@
   }
 </script>
 
-<div class={`w-full flex h-full p-4`} style="height: calc(100vh - 3.5rem);">
+<div class={`${classname} w-full flex h-full p-4`} style="height: calc(100vh - 3.5rem);">
   <div
     class="flex-grow border rounded-l shadow"
     bind:this={leftItem}
-    style={`width: ${startWidthLeftPercent}%;`}
+    style={`width: ${startLeftWidthPercent}%;`}
   >
     <slot name="left" />
   </div>
@@ -46,7 +49,7 @@
   <div
     class="flex-grow border rounded-r shadow"
     bind:this={rightItem}
-    style={`width: ${100 - startWidthLeftPercent}%;`}
+    style={`width: ${100 - startLeftWidthPercent}%;`}
   >
     <slot name="right" />
   </div>

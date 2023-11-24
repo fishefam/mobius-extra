@@ -1,7 +1,8 @@
 <script lang="ts">
+  export let classname: string
 </script>
 
-<div class="overflow-y-scroll h-full">
+<div class={`${classname} h-full`}>
   <slot name="top" />
   <slot name="bottom" />
 </div>

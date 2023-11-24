@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { useSubscribe } from 'page/hooks/store'
   import {
     store_algorithm_code_mirror_view,
     store_author_notes_code_mirror_view,
@@ -11,16 +12,22 @@
     store_section,
     store_type,
   } from 'page/store'
-  import { onDestroy, onMount } from 'svelte'
-  import { get, type Unsubscriber } from 'svelte/store'
+  import { get } from 'svelte/store'
 
+  export let classname: string
+  let sectionClassname = 'editor__question-feedback-code-editor'
   let div: HTMLDivElement
-  let unsubscribeStoreSection: Unsubscriber
-  let unsubscribeStoreType: Unsubscriber
-  let wrapperClassname: string
 
-  onMount(() => {
-    unsubscribeStoreSection = store_section.subscribe((section) => {
+  useSubscribe({
+    func: (section) =>
+      (sectionClassname = ['question', 'feedback'].includes(section)
+        ? 'editor__question-feedback-code-editor'
+        : 'editor__algorithm-authornotes-code-editor'),
+    store: store_section,
+  })
+
+  useSubscribe({
+    func: (section) => {
       let isNotSet = true
       const type = get(store_type)
       div.replaceChildren('')
@@ -56,12 +63,12 @@
         div.appendChild(store_feedback_javascript_code_mirror_view.dom)
         isNotSet = false
       }
-      wrapperClassname =
-        section === 'question' || section === 'feedback'
-          ? 'editor__code-editor-container'
-          : 'editor__text-editor-container'
-    })
-    unsubscribeStoreType = store_type.subscribe((type) => {
+    },
+    store: store_section,
+  })
+
+  useSubscribe({
+    func: (type) => {
       let isNotSet = true
       const section = get(store_section)
       div.replaceChildren('')
@@ -97,22 +104,18 @@
         div.appendChild(store_feedback_javascript_code_mirror_view.dom)
         isNotSet = false
       }
-    })
-  })
-
-  onDestroy(() => {
-    if (unsubscribeStoreType) unsubscribeStoreType()
-    if (unsubscribeStoreSection) unsubscribeStoreSection()
+    },
+    store: store_type,
   })
 </script>
 
-<div class={`text-gray-600 ${wrapperClassname}`} bind:this={div}></div>
+<div class={`${classname} ${sectionClassname} text-gray-600`} bind:this={div}></div>
 
 <style>
-  :global(.editor__code-editor-container .cm-scroller) {
+  :global(.editor__question-feedback-code-editor .cm-scroller) {
     height: 560px !important;
   }
-  :global(.editor__text-editor-container .cm-scroller) {
+  :global(.editor__algorithm-authornotes-code-editor .cm-scroller) {
     height: 600px !important;
   }
 </style>
